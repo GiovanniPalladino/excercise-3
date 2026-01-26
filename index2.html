@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Organismo Tipografico</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root { --bg: #f5f3ed; --text: #45910e; }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Space Grotesk', system-ui, -apple-system, sans-serif;
+      color: var(--text);
+      background: var(--bg);
+      min-height: 100vh;
+    }
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      background: var(--bg);
+      overflow: hidden;
+      transition: opacity 0.6s ease;
+    }
+    .hero.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+    .video-stage {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      z-index: 0;
+    }
+    video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      opacity: 0.9;
+    }
+    .title-line {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      opacity: 0;
+      transform: translateY(12px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .title-line.visible { opacity: 1; transform: translateY(0); }
+    .title-line.hidden { opacity: 0; transform: translateY(-8px); }
+    h1 {
+      margin: 0;
+      font-size: clamp(42px, 6vw, 82px);
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      color: var(--text);
+    }
+    .scroll-cue {
+      position: absolute;
+      bottom: 18px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 2;
+      text-align: center;
+      font-size: 12px;
+      letter-spacing: 0.26em;
+      text-transform: uppercase;
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      opacity: 0;
+      transition: opacity 0.5s ease;
+    }
+    .scroll-cue.visible { opacity: 1; }
+    .scroll-icon {
+      width: 18px;
+      height: 28px;
+      border: 1px solid var(--text);
+      border-radius: 10px;
+      position: relative;
+      overflow: hidden;
+    }
+    .scroll-icon::after {
+      content: "";
+      position: absolute;
+      top: 6px;
+      left: 50%;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--text);
+      transform: translateX(-50%);
+      animation: drop 1.6s ease-in-out infinite;
+    }
+    @keyframes drop {
+      0% { opacity: 0.8; transform: translate(-50%, 0); }
+      50% { opacity: 0.3; transform: translate(-50%, 8px); }
+      100% { opacity: 0.8; transform: translate(-50%, 0); }
+    }
+    .foreword {
+      padding: 130px 7vw 140px;
+      background: var(--bg);
+    }
+    .foreword .inner {
+      max-width: 840px;
+      margin: 0 auto;
+      display: grid;
+      gap: 18px;
+    }
+    .foreword h2 {
+      margin: 0;
+      font-size: clamp(24px, 3vw, 32px);
+      letter-spacing: -0.01em;
+      color: var(--text);
+      border-bottom: 1px solid rgba(69, 145, 14, 0.18);
+      padding-bottom: 10px;
+    }
+    .foreword p {
+      margin: 0;
+      font-size: 18px;
+      line-height: 1.7;
+      color: var(--text);
+    }
+    @media (max-width: 720px) {
+      .foreword { padding: 72px 8vw 100px; }
+      .foreword p { font-size: 17px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation: none !important; transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <section class="hero" id="intro">
+    <div class="video-stage">
+      <video id="introVideo" autoplay muted playsinline preload="auto" poster="" aria-label="Intro video">
+        <source src="media/intro.mp4" type="video/mp4">
+        Il tuo browser non supporta il video.
+      </video>
+    </div>
+    <div class="title-line" id="titleLine">
+      <h1>Organismo Tipografico</h1>
+    </div>
+    <div class="scroll-cue" id="scrollCue" aria-hidden="true">
+      <span>Scroll</span>
+      <span class="scroll-icon"></span>
+    </div>
+  </section>
+
+  <section class="foreword" id="foreword">
+    <div class="inner">
+      <h2>Premessa</h2>
+      <p>
+        L’apertura è essenziale: il video respira per sette secondi, il titolo emerge,
+        poi ti guidiamo automaticamente al testo. Niente altro sullo schermo, solo fondo
+        panna e il verde che marca ogni parola.
+      </p>
+      <p>
+        Qui trovi la descrizione iniziale. Puoi aggiungere note, capitoli o collegamenti
+        alle sezioni successive: questa pagina resta pulita, pronta a crescere con i
+        tuoi contenuti.
+      </p>
+    </div>
+  </section>
+
+  <script>
+    (() => {
+      const introVideo = document.getElementById('introVideo');
+      const titleLine = document.getElementById('titleLine');
+      const scrollCue = document.getElementById('scrollCue');
+      const hero = document.getElementById('intro');
+      const foreword = document.getElementById('foreword');
+      const introDuration = 7000; // ms
+      let revealed = false;
+
+      const revealThenHide = () => {
+        if (revealed) return;
+        revealed = true;
+        titleLine.classList.add('visible');
+        setTimeout(() => {
+          titleLine.classList.add('hidden');
+          scrollCue.classList.add('visible');
+          setTimeout(() => {
+            foreword.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            setTimeout(() => hero.classList.add('hidden'), 700);
+          }, 300);
+        }, 900);
+      };
+
+      window.addEventListener('DOMContentLoaded', () => {
+        introVideo?.play().catch(() => {});
+        setTimeout(revealThenHide, introDuration);
+      });
+
+      introVideo?.addEventListener('ended', revealThenHide, { once: true });
+    })();
+  </script>
+</body>
+</html>

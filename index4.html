@@ -2,7 +2,7 @@
 <html lang="it">
 <head>
 <meta charset="UTF-8">
-<title>Organismo Tipografico - Grid Edition</title>
+<title>Organismo Tipografico - Minimalist Grid</title>
 
 <style>
 * {
@@ -18,7 +18,7 @@ body {
 }
 
 /* ======================
-   TITOLO (保持不变)
+   TITOLO & TEXT BLOCK (保持原样)
 ====================== */
 #title {
     position: absolute;
@@ -33,33 +33,16 @@ body {
     color: #fff;
     mix-blend-mode: difference;
 }
-
 #title span {
     display: inline-block;
     opacity: 0;
     transform: translateX(-20px);
     transition: opacity 0.8s ease, transform 0.8s ease;
 }
+#title.visible span { opacity: 1; transform: translateX(0); }
+#title.visible span:nth-child(2) { transition-delay: 0.4s; }
+#title.fixed { position: fixed; top: 20px; transform: none; transition: top 1.2s ease; }
 
-#title.visible span {
-    opacity: 1;
-    transform: translateX(0);
-}
-
-#title.visible span:nth-child(2) {
-    transition-delay: 0.4s;
-}
-
-#title.fixed {
-    position: fixed;
-    top: 20px;
-    transform: none;
-    transition: top 1.2s ease;
-}
-
-/* ======================
-   TEXT BLOCK
-====================== */
 #text-block {
     position: absolute;
     top: 100%;
@@ -68,74 +51,63 @@ body {
     opacity: 0;
     transition: top 1.2s ease, opacity 0.8s ease;
 }
+
 /* ======================
-   CONTENT GRID SYSTEM
+   CONTENT GRID SYSTEM 
+   更宽的边距，更长的垂直空间
 ====================== */
 #content {
-    margin-top: 100vh;
-    padding: 120px 15%; /* 稍微收窄一点点内边距，给三列布局留空间 */
+    margin-top: 120vh;
+    padding: 100px 18%; /* 增加左右边距到 20%，让中心区域更窄更精致 */
     display: grid;
     grid-template-columns: repeat(12, 1fr);
-    grid-auto-rows: 50px; /* 更细的行高，更方便错位 */
-    gap: 0px 30px; /* 移除垂直 gap，改用 grid-row 手动控制距离 */
+    grid-auto-rows: 80px; /* 每一行的高度 */
+    gap: 0px 32px; 
     justify-content: center;
 }
 
 .image {
     align-self: start;
     filter: grayscale(1);
-    transition: all 0.5s ease;
-    margin-bottom: 60px; /* 基础间距 */
+    transition: filter 0.5s ease;
+}
+
+.image:hover {
+    filter: grayscale(0);
 }
 
 .image img {
     width: 100%;
-    height: auto;
+    height: 100%; /* 将 auto 改为 100% */
+    object-fit: cover; /* 关键：这会像背景图一样裁剪图片，防止变形 */
     display: block;
-    /* 如果想强制比例，可以取消下面注释 */
-    /* aspect-ratio: attr(data-ratio); */ 
 }
 
 /* ======================
-   12-IMAGE ASYMMETRIC LAYOUT
-   没有任何一张图在同一水平线上
+   12-IMAGE ELEGANT DISPERSED LAYOUT
+   跨度微调至 3-4 列 (约为原先 1.3 倍)
+   保持大幅度垂直跳跃以维持长页面效果
 ====================== */
 
-/* 1. 纵向 - 左侧 (V) */
-.image:nth-child(1) { grid-column: 1 / span 3; grid-row: 1 / span 6; }
+/* Group 1 */
+.image:nth-child(1) { grid-column: 1 / span 4; grid-row: 3 / span 6; } /* 纵向 */
+.image:nth-child(2) { grid-column: 6 / span 6; grid-row: 7 / span 4; } /* 横向 */
+.image:nth-child(3) { grid-column: 10 / span 4; grid-row: 1 / span 4; } /* 正方形 */
 
-/* 2. 横向 - 中间偏右 (H) - 紧随其后但在不同行开始 */
-.image:nth-child(2) { grid-column: 5 / span 4; grid-row: 3 / span 4; }
+/* Group 2 */
+.image:nth-child(4) { grid-column: 2 / span 4; grid-row: 17 / span 5; } /* 大纵向 */
+.image:nth-child(5) { grid-column: 10 / span 3; grid-row: 14 / span 4; } /* 正方形 */
+.image:nth-child(6) { grid-column: 8 / span 9; grid-row: 21 / span 5; } /* 横向 */
 
-/* 3. 正方形 - 极右 (S) */
-.image:nth-child(3) { grid-column: 10 / span 3; grid-row: 6 / span 4; }
+/* Group 3 */
+.image:nth-child(7) { grid-column: 1 / span 2; grid-row: 26 / span 3; } /* 纵向 */
+.image:nth-child(8) { grid-column: 5 / span 4; grid-row: 28 / span 3; } /* 横向 */
+.image:nth-child(9) { grid-column: 9 / span 7; grid-row: 32 / span 9; } /* 正方形 */
 
-/* 4. 纵向 - 中间偏左 (V) */
-.image:nth-child(4) { grid-column: 2 / span 3; grid-row: 12 / span 7; }
-
-/* 5. 横向 - 右侧 (H) */
-.image:nth-child(5) { grid-column: 7 / span 5; grid-row: 15 / span 4; }
-
-/* 6. 小正方形 - 极左 (S) */
-.image:nth-child(6) { grid-column: 1 / span 2; grid-row: 21 / span 3; }
-
-/* 7. 纵向 - 居中 (V) */
-.image:nth-child(7) { grid-column: 5 / span 3; grid-row: 24 / span 6; }
-
-/* 8. 横向 - 右侧 (H) */
-.image:nth-child(8) { grid-column: 9 / span 4; grid-row: 28 / span 4; }
-
-/* 9. 正方形 - 左侧 (S) */
-.image:nth-child(9) { grid-column: 2 / span 3; grid-row: 35 / span 4; }
-
-/* 10. 纵向 - 极右 (V) */
-.image:nth-child(10){ grid-column: 10 / span 2; grid-row: 38 / span 5; }
-
-/* 11. 横向 - 居中 (H) */
-.image:nth-child(11){ grid-column: 4 / span 5; grid-row: 44 / span 4; }
-
-/* 12. 纵向 - 左侧 (V) */
-.image:nth-child(12){ grid-column: 1 / span 3; grid-row: 50 / span 6; }
+/* Group 4 */
+.image:nth-child(10){ grid-column: 1 / span 3; grid-row: 34 / span 3; } /* 纵向 */
+.image:nth-child(11){ grid-column: 3 / span 4; grid-row: 40 / span 3; } /* 横向 */
+.image:nth-child(12){ grid-column: 9 / span 2; grid-row: 43 / span 3; } /* 纵向收尾 */
 </style>
 </head>
 
@@ -154,18 +126,18 @@ body {
 </div>
 
 <div id="content">
-    <div class="image"><img src="https://picsum.photos/400/500?1"></div>
-    <div class="image"><img src="https://picsum.photos/300/400?2"></div>
-    <div class="image"><img src="https://picsum.photos/400/300?3"></div>
-    <div class="image"><img src="https://picsum.photos/500/600?4"></div>
-    <div class="image"><img src="https://picsum.photos/300/300?5"></div>
-    <div class="image"><img src="https://picsum.photos/400/550?6"></div>
-    <div class="image"><img src="https://picsum.photos/350/450?7"></div>
-    <div class="image"><img src="https://picsum.photos/450/350?8"></div>
-    <div class="image"><img src="https://picsum.photos/500/400?9"></div>
-    <div class="image"><img src="https://picsum.photos/300/500?10"></div>
-    <div class="image"><img src="https://picsum.photos/400/400?11"></div>
-    <div class="image"><img src="https://picsum.photos/350/500?12"></div>
+    <div class="image"><img src="https://picsum.photos/300/450?1"></div>
+    <div class="image"><img src="https://picsum.photos/500/350?2"></div>
+    <div class="image"><img src="https://picsum.photos/400/400?3"></div>
+    <div class="image"><img src="https://picsum.photos/350/500?4"></div>
+    <div class="image"><img src="https://picsum.photos/300/400?5"></div>
+    <div class="image"><img src="https://picsum.photos/500/380?6"></div>
+    <div class="image"><img src="https://picsum.photos/320/480?7"></div>
+    <div class="image"><img src="https://picsum.photos/450/300?8"></div>
+    <div class="image"><img src="https://picsum.photos/400/600?9"></div>
+    <div class="image"><img src="https://picsum.photos/300/300?10"></div>
+    <div class="image"><img src="https://picsum.photos/500/350?11"></div>
+    <div class="image"><img src="https://picsum.photos/300/400?12"></div>
 </div>
 
 <script>

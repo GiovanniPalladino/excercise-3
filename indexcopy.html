@@ -5,18 +5,29 @@
 <title>Organismo Tipografico</title>
 
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&display=swap');
+:root {
+    --specimen-green: #45910e;
+}
+
+@font-face {
+    font-family: 'G15';
+    src: url('G15_Font.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
 
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'Space Grotesk', Arial, sans-serif;
+    font-family: 'G15', Arial, sans-serif;
 }
 
 body {
     overflow-x: hidden;
     background-color: white;
+    color: var(--specimen-green);
 }
 
 /* ======================
@@ -27,14 +38,15 @@ body {
     left: 40px;
     top: 50%;
     transform: translateY(-50%);
-    font-size: 16px;
+    font-size: 34px;
     cursor: pointer;
     z-index: 1000;
     display: flex;
     gap: 0.5em;
+    font-variant-caps: normal;
 
-    color: #fff;
-    mix-blend-mode: difference;
+    color: var(--specimen-green);
+    mix-blend-mode: normal;
 }
 
 #title span {
@@ -152,12 +164,12 @@ body {
 .specimen-lede {
     font-size: 20px;
     line-height: 1.5;
-    color: #1f1f1f;
+    color: var(--specimen-green);
     max-width: 520px;
 }
 
 .scale-note {
-    color: #c03c3c;
+    color: var(--specimen-green);
     font-size: 12px;
     letter-spacing: 0.08em;
     text-transform: uppercase;
@@ -168,11 +180,11 @@ body {
     grid-template-columns: 64px 1fr;
     gap: 10px 16px;
     align-items: baseline;
-    color: #1d1d1d;
+    color: var(--specimen-green);
 }
 
 .scale-size {
-    color: #c03c3c;
+    color: var(--specimen-green);
     font-size: 11px;
     letter-spacing: 0.06em;
     text-transform: uppercase;
@@ -206,14 +218,14 @@ body {
     font-size: 13px;
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    color: #1f1f1f;
+    color: var(--specimen-green);
 }
 
 .size-header::after {
     content: '';
     flex: 1;
     height: 2px;
-    background: #1f1f1f;
+    background: var(--specimen-green);
 }
 
 .size-letter {
@@ -221,20 +233,175 @@ body {
     line-height: 0.9;
 }
 
-.size-letter.small { color: #118845; font-size: clamp(120px, 18vw, 180px); }
-.size-letter.medium { color: #0f78d1; font-size: clamp(160px, 22vw, 220px); }
-.size-letter.large { color: #d5352f; font-size: clamp(200px, 28vw, 300px); }
+.size-letter.small { color: var(--specimen-green); font-size: clamp(120px, 18vw, 180px); }
+.size-letter.medium { color: var(--specimen-green); font-size: clamp(160px, 22vw, 220px); }
+.size-letter.large { color: var(--specimen-green); font-size: clamp(200px, 28vw, 300px); }
 
 .size-copy {
     font-size: 16px;
     line-height: 1.4;
-    color: #1f1f1f;
+    color: var(--specimen-green);
     max-width: 260px;
 }
 
-.size-copy.small { color: #118845; }
-.size-copy.medium { color: #0f78d1; }
-.size-copy.large { color: #d5352f; }
+.size-copy.small { color: var(--specimen-green); }
+.size-copy.medium { color: var(--specimen-green); }
+.size-copy.large { color: var(--specimen-green); }
+
+/* ======================
+   GLYPH VIEWER
+====================== */
+#glyph-viewer {
+    padding: 140px 40px 180px;
+    display: grid;
+    grid-template-columns: minmax(360px, 0.9fr) minmax(420px, 1.1fr);
+    gap: 48px;
+    align-items: start;
+}
+
+.glyph-left {
+    position: sticky;
+    top: 120px;
+    align-self: start;
+}
+
+.glyph-left h2 {
+    font-size: 28px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 18px;
+    color: var(--specimen-green);
+    font-weight: 400;
+}
+
+.glyph-preview {
+    position: relative;
+    min-height: 520px;
+    background: #ffffff;
+    border: 1px solid #e4e2da;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.05);
+    padding: 40px 32px 64px;
+    overflow: hidden;
+}
+
+.glyph-character {
+    font-size: clamp(220px, 28vw, 340px);
+    font-weight: 400;
+    line-height: 1;
+    color: var(--specimen-green);
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+}
+
+.glyph-meta {
+    position: absolute;
+    left: 24px;
+    bottom: 18px;
+    display: flex;
+    gap: 16px;
+    font-size: 13px;
+    color: var(--specimen-green);
+}
+
+.glyph-right {
+    display: grid;
+    gap: 18px;
+    max-height: calc(100vh - 60px); /* taller to reveal ~2 more rows */
+    min-height: 680px;
+    overflow-y: auto;
+    padding-right: 6px;
+    position: relative;
+    scrollbar-width: thin;
+    scrollbar-color: #cfcac0 transparent;
+}
+
+.glyph-right::-webkit-scrollbar {
+    width: 8px;
+}
+
+.glyph-right::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.glyph-right::-webkit-scrollbar-thumb {
+    background: transparent;
+    border: 1.5px solid #d5d0c6;
+    border-radius: 10px;
+    min-height: 8px;
+    max-height: 16px;
+}
+.glyph-legend {
+    position: sticky;
+    top: 0;
+    z-index: 3;
+    background: linear-gradient(180deg, #ffffff 85%, rgba(255,255,255,0));
+    padding-top: 6px;
+    padding-bottom: 10px;
+}
+
+.glyph-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(64px, 1fr));
+    gap: 8px;
+}
+
+.glyph-anchor {
+    grid-column: 1 / -1;
+    height: 0;
+}
+
+.glyph-cell {
+    border: 1px solid #d5d3cb;
+    background: #fff;
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 26px;
+    cursor: pointer;
+    transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+    color: var(--specimen-green);
+}
+
+.glyph-cell.smallcaps {
+    font-variant-caps: small-caps;
+}
+
+.glyph-cell:hover,
+.glyph-cell.active {
+    background: #e7f4db;
+    border-color: #9acb6d;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+}
+
+.glyph-legend {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.glyph-pill {
+    padding: 9px 16px;
+    border: 1px solid #d5d3cb;
+    border-radius: 16px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 11px;
+    background: #fff;
+    color: var(--specimen-green);
+    cursor: pointer;
+    transition: background 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.glyph-pill:hover {
+    background: #e7f4db;
+    border-color: #9acb6d;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
 
 @media (max-width: 1024px) {
     #specimen {
@@ -243,6 +410,14 @@ body {
     }
     .specimen-left { grid-column: 1 / span 8; }
     .specimen-right { grid-column: 1 / span 8; }
+
+    #glyph-viewer {
+        grid-template-columns: 1fr;
+        padding: 120px 28px 140px;
+    }
+    .glyph-preview { min-height: 420px; }
+    .glyph-left { position: relative; top: 0; }
+    .glyph-right { max-height: none; overflow: visible; padding-right: 0; }
 }
 
 @media (max-width: 720px) {
@@ -254,6 +429,15 @@ body {
         font-size: clamp(140px, 40vw, 220px);
     }
     .specimen-left { gap: 32px; }
+
+    #glyph-viewer {
+        gap: 28px;
+        padding: 100px 24px 120px;
+    }
+    .glyph-grid {
+        grid-template-columns: repeat(auto-fit, minmax(54px, 1fr));
+    }
+    .glyph-cell { font-size: 22px; }
 }
 </style>
 </head>
@@ -333,6 +517,34 @@ body {
     </div>
 </section>
 
+<!-- ======================
+     GLYPH VIEWER
+====================== -->
+<section id="glyph-viewer">
+    <div class="glyph-left">
+        <h2>Glifi</h2>
+        <div class="glyph-preview">
+            <span id="glyph-display" class="glyph-character">A</span>
+            <div class="glyph-meta" id="glyph-meta">
+                <span>Maiuscola</span>
+                <span>U+0041</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="glyph-right">
+        <div class="glyph-legend">
+            <button class="glyph-pill" data-target="maiuscole">Maiuscole</button>
+            <button class="glyph-pill" data-target="minuscole">Minuscole</button>
+            <button class="glyph-pill" data-target="maiuscoletto">Maiuscoletto</button>
+            <button class="glyph-pill" data-target="numeri">Numeri</button>
+            <button class="glyph-pill" data-target="accenti">Accenti</button>
+            <button class="glyph-pill" data-target="glifi">Glifi</button>
+        </div>
+        <div id="glyph-grid" class="glyph-grid" aria-label="Glyph grid"></div>
+    </div>
+</section>
+
 <script>
 const title = document.getElementById("title");
 const textBlock = document.getElementById("text-block");
@@ -355,6 +567,116 @@ window.addEventListener('load', () => {
 
 title.addEventListener("click", () => {
     textBlock.scrollIntoView({ behavior: "smooth", block: "center" });
+});
+
+/* ======================
+   GLYPH GRID INTERACTION
+====================== */
+const glyphGrid = document.getElementById("glyph-grid");
+const glyphDisplay = document.getElementById("glyph-display");
+const glyphMeta = document.getElementById("glyph-meta");
+
+const baseUpper = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+const baseLower = "abcdefghijklmnopqrstuvwxyz".split("");
+const smallCaps = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+const numbers = "0123456789".split("");
+const accentsUpper = "ÀÁÈÉÌÍÒÓÙÚÝ".split("");
+const accentsLower = "àáèéìíòóùúý".split("");
+
+const glyphSymbols = [
+    ..."!&'()*.·,/.:;?¿¡@#[]{}",
+    ..."«»",
+    ..."\\",
+    ..."-%‰…–—_`^+<=>|~≈",
+    ..."\"“”’",
+    ..." $£¥€"
+];
+
+let activeGlyph = null;
+
+function showGlyph(char, cell, persist = false) {
+    const isSmallCaps = cell.classList.contains("smallcaps");
+    const caseLabel = isSmallCaps ? "Maiuscoletto" : (char === char.toUpperCase() ? "Maiuscola" : "Minuscola");
+    const code = char.codePointAt(0).toString(16).toUpperCase().padStart(4, "0");
+    glyphDisplay.textContent = char;
+    glyphMeta.innerHTML = `<span>${caseLabel}</span><span>U+${code}</span>`;
+    glyphDisplay.style.fontVariantCaps = isSmallCaps ? "small-caps" : "normal";
+
+    if (persist) {
+        document.querySelectorAll(".glyph-cell.active").forEach(el => el.classList.remove("active"));
+        cell.classList.add("active");
+        activeGlyph = { char, cell };
+    }
+}
+
+function addGlyph(char, options = {}) {
+    const cell = document.createElement("button");
+    cell.type = "button";
+    cell.className = "glyph-cell";
+    if (options.smallCaps) cell.classList.add("smallcaps");
+    cell.textContent = char;
+    cell.setAttribute("aria-label", `Preview ${char}${options.smallCaps ? " maiuscoletto" : ""}`);
+
+    cell.addEventListener("mouseenter", () => showGlyph(char, cell, false));
+    cell.addEventListener("mouseleave", () => {
+        if (activeGlyph) showGlyph(activeGlyph.char, activeGlyph.cell, false);
+    });
+    cell.addEventListener("focus", () => showGlyph(char, cell, false));
+    cell.addEventListener("click", () => showGlyph(char, cell, true));
+
+    glyphGrid.appendChild(cell);
+    return cell;
+}
+
+let firstCell = null;
+
+// Order: Big caps, small caps, maiuscoletto, numeri, accented letters, symbols
+function addAnchor(id) {
+    const anchor = document.createElement("div");
+    anchor.id = id;
+    anchor.className = "glyph-anchor";
+    glyphGrid.appendChild(anchor);
+}
+
+addAnchor("maiuscole");
+baseUpper.forEach((char) => {
+    const cell = addGlyph(char);
+    if (!firstCell) firstCell = cell;
+});
+
+addAnchor("minuscole");
+baseLower.forEach((char) => addGlyph(char));
+
+addAnchor("maiuscoletto");
+smallCaps.forEach((char) => addGlyph(char, { smallCaps: true }));
+
+addAnchor("numeri");
+numbers.forEach((char) => addGlyph(char));
+
+addAnchor("accenti");
+accentsUpper.forEach((char) => addGlyph(char));
+accentsLower.forEach((char) => addGlyph(char));
+
+addAnchor("glifi");
+glyphSymbols.forEach((char) => addGlyph(char));
+
+if (firstCell) showGlyph(firstCell.textContent, firstCell, true);
+
+// Scroll buttons to sections
+const glyphContainer = document.querySelector(".glyph-right");
+
+document.querySelectorAll(".glyph-pill[data-target]").forEach(btn => {
+    btn.addEventListener("click", () => {
+        const id = btn.getAttribute("data-target");
+        const anchor = document.getElementById(id);
+        if (anchor && glyphContainer) {
+            const topOffset = 70; // keep first glyph box clear of sticky buttons
+            const containerRect = glyphContainer.getBoundingClientRect();
+            const anchorRect = anchor.getBoundingClientRect();
+            const target = glyphContainer.scrollTop + (anchorRect.top - containerRect.top) - topOffset;
+            glyphContainer.scrollTo({ top: Math.max(target, 0), behavior: "smooth" });
+        }
+    });
 });
 </script>
 

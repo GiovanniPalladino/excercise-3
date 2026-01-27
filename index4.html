@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<title>Organismo Tipografico</title>
+
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: Arial, sans-serif;
+    }
+
+    body {
+        overflow-x: hidden;
+        background-color: white; 
+    }
+
+    /* --- [已注释] VIDEO INTRO 样式 --- */
+    /* #video-intro {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: black;
+        z-index: 100;
+    }
+    #video-intro video {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    */
+
+    /* TITOLO - 核心修改部分 */
+    #title {
+        position: absolute;
+        left: 40px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 16px;
+        cursor: pointer;
+        z-index: 1000; /* 确保在最顶层 */
+        display: flex;
+        gap: 0.5em;
+
+        /* 反色效果核心属性 */
+        color: #fff; /* 必须是白色才能在白底上产生黑字效果 */
+        mix-blend-mode: difference; 
+    }
+
+    #title span {
+        display: inline-block;
+        opacity: 0;
+        transform: translateX(-20px);
+        transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+
+    #title.visible span {
+        opacity: 1;
+        transform: translateX(0);
+    }
+
+    #title.visible span:nth-child(2) {
+        transition-delay: 0.4s;
+    }
+
+    #title.fixed {
+        position: fixed;
+        top: 20px;
+        transform: none;
+        transition: top 1.2s ease;
+    }
+
+    /* 文字块 */
+    #text-block {
+        position: absolute;
+        top: 100%;
+        left: 40px;
+        width: 300px;
+        opacity: 0;
+        transition: top 1.2s ease, opacity 0.8s ease;
+    }
+
+    /* 内容区域 */
+    #content {
+        margin-top: 120vh;
+        padding: 60px 40px;
+    }
+
+    .image {
+        width: 300px;
+        margin: 120px auto;
+    }
+
+    .image img {
+        width: 100%;
+        display: block;
+        /* 为了让反色效果更明显，可以给图片加一点对比度 */
+        filter: grayscale(1); 
+    }
+</style>
+</head>
+
+<body>
+
+<div id="title">
+    <span>Organismo</span>
+    <span>Tipografico</span>
+</div>
+
+<div id="text-block">
+    <p>
+        Questo è il secondo pacchetto di testo.<br>
+        Rimane a metà pagina ed è il punto di ritorno.
+    </p>
+</div>
+
+<div id="content">
+    <div class="image"><img src="https://picsum.photos/400/300?1"></div>
+    <div class="image"><img src="https://picsum.photos/300/450?2"></div>
+    <div class="image"><img src="https://picsum.photos/500/300?3"></div>
+    <div class="image"><img src="https://picsum.photos/350/500?4"></div>
+</div>
+
+<script>
+    const title = document.getElementById("title");
+    const textBlock = document.getElementById("text-block");
+    const videoIntro = document.getElementById("video-intro");
+
+    // --- 方案 A: 当前生效 ---
+    window.addEventListener('load', () => {
+        setTimeout(() => {
+            title.classList.add("visible");
+        }, 300);
+
+        setTimeout(() => {
+            title.style.top = "20px";
+            title.classList.add("fixed"); 
+            textBlock.style.top = "50%";
+            textBlock.style.opacity = "1";
+        }, 1800);
+    });
+
+    /* --- [已保留] 方案 B: 原始逻辑 ---
+    setTimeout(() => {
+        if(videoIntro) videoIntro.style.display = "none";
+        title.classList.add("visible");
+        setTimeout(() => {
+            title.style.top = "20px";
+            title.classList.add("fixed");
+            textBlock.style.top = "50%";
+            textBlock.style.opacity = "1";
+        }, 2500);
+    }, 6000);
+    */
+
+    title.addEventListener("click", () => {
+        textBlock.scrollIntoView({ behavior: "smooth", block: "center" });
+    });
+</script>
+
+</body>
+</html>

@@ -24,8 +24,8 @@
 
 body {
     overflow-x: hidden;
-    background-color: #f3fcf4; /* 初始背景 */
-    color: #2d7732;            
+    background-color: #f3fcf4; /* 浅绿背景 */
+    color: #2d7732;            /* 全局文字深绿 */
 }
 
 /* ======================
@@ -68,18 +68,6 @@ body {
     line-height: 1.6;
     margin-bottom: 1.2em;
     text-align: justify;
-}
-
-/* ======================
-    NOISE BACKGROUND WRAPPER 
-    从这里开始应用 noise1.pdf
-====================== */
-.noise-bg-area {
-    background-image: url('noise1.pdf');
-    background-size: cover;
-    background-position: center top;
-    background-attachment: scroll; /* 随内容滚动 */
-    width: 100%;
 }
 
 /* ======================
@@ -126,7 +114,7 @@ body {
 .image:nth-child(12){ grid-column: 9 / span 2; grid-row: 43 / span 3; }
 
 /* ======================
-    SPECIMEN SHOWCASE
+    NEW: SPECIMEN SHOWCASE
 ====================== */
 #specimen {
     padding: 100px 18%;
@@ -135,13 +123,20 @@ body {
     border-top: 1px solid rgba(45, 119, 50, 0.2);
 }
 
-/* ... 保持原有样式不变 ... */
 .specimen-left { flex: 1; }
 .specimen-right { flex: 1; display: flex; flex-direction: column; gap: 40px; }
-.specimen-lede { font-size: 24px; line-height: 1.3; margin-bottom: 60px; max-width: 500px; }
+
+.specimen-lede {
+    font-size: 24px;
+    line-height: 1.3;
+    margin-bottom: 60px;
+    max-width: 500px;
+}
+
 .scale-note { font-size: 12px; text-transform: uppercase; margin-bottom: 20px; opacity: 0.7; }
 .scale-ruler { display: flex; flex-direction: column; gap: 10px; }
 .scale-size { font-size: 10px; opacity: 0.5; margin-right: 15px; display: inline-block; width: 30px; }
+
 .size-card { border-bottom: 1px solid rgba(45, 119, 50, 0.1); padding-bottom: 20px; }
 .size-header { font-size: 12px; text-transform: uppercase; margin-bottom: 10px; opacity: 0.7; }
 .size-letter { font-size: 100px; line-height: 1; margin: 10px 0; }
@@ -151,24 +146,45 @@ body {
 .size-copy { font-size: 13px; opacity: 0.8; }
 
 /* ======================
-    GLYPH VIEWER
+    NEW: GLYPH VIEWER
 ====================== */
 #glyph-viewer {
     padding: 100px 18% 200px;
     display: flex;
     gap: 64px;
-    /* 移除了原来的 background-color 以显示 noise1.pdf */
+    background-color: #eaf5eb; /* 稍微深一点的绿作为区分 */
 }
 
 .glyph-left { flex: 1; position: sticky; top: 100px; height: fit-content; }
 .glyph-right { flex: 2; }
+
 .glyph-character { font-size: 260px; line-height: 1; display: block; margin-top: 20px; }
 .glyph-meta { margin-top: 20px; display: flex; gap: 20px; font-size: 14px; text-transform: uppercase; }
+
 .glyph-legend { margin-bottom: 30px; display: flex; gap: 10px; }
 .glyph-pill { border: 1px solid #2d7732; padding: 4px 12px; border-radius: 20px; font-size: 12px; }
-.glyph-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(50px, 1fr)); gap: 8px; }
-.glyph-cell { aspect-ratio: 1; background: none; border: 1px solid rgba(45, 119, 50, 0.1); color: #2d7732; font-size: 20px; cursor: pointer; transition: all 0.2s; }
-.glyph-cell:hover, .glyph-cell.active { background-color: #2d7732; color: #f3fcf4; }
+
+.glyph-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
+    gap: 8px;
+}
+
+.glyph-cell {
+    aspect-ratio: 1;
+    background: none;
+    border: 1px solid rgba(45, 119, 50, 0.1);
+    color: #2d7732;
+    font-size: 20px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.glyph-cell:hover, .glyph-cell.active {
+    background-color: #2d7732;
+    color: #f3fcf4;
+}
+
 .smallcaps { font-variant-caps: small-caps; }
 </style>
 </head>
@@ -181,85 +197,90 @@ body {
 </div>
 
 <div id="text-block">
-    <p>Il nostro archivio interpreta il segno grafico attraverso la lente della biologia cellulare, elevando la letter a unità minima e vitale del linguaggio. Come la cellula rappresenta il mattone fondamentale della vita, così ogni carattere racchiude in sé un codice morfologico che si evolve e si adatta nel tempo.</p>
+    <p>Il nostro archivio interpreta il segno grafico attraverso la lente della biologia cellulare, elevando la lettera a unità minima e vitale del linguaggio. Come la cellula rappresenta il mattone fondamentale della vita, così ogni carattere racchiude in sé un codice morfologico che si evolve e si adatta nel tempo.</p>
     <p>Attraverso questa analogia, l’archivio non si limita a catalogare forme, ma si costituisce come un vero e proprio organismo linguistico, dove la storia della tipografia viene riletta come un processo di sviluppo biologico e strutturale.</p>
-    <p>Adottando il rigore scientifico della biologia moderna, analizziamo l’evoluzione dei caratteri come una serie di mutazioni organiche. Il nostro approccio seziona l’anatomia dei glifi per rivelarne la vitalità intrinseca e le trasformazioni storiche, trattando ogni segno come un’entità soggetta a leggi di crescita e differenziazione.</p>
+    <p>Adottando il rigore scientifico della biologia moderna, analizziamo l’evoluzione dei caratteri come una serie di mutazioni organiche. Il nostro approccio seziona l’anatomia dei glifi per rivelarne la vitalità intrinseca e le trasformazioni storiche, trattando ogni segno come un’entità soggetta a leggi di crescita e differenziazione. In questo spazio di ricerca, la morfologia cellulare e il design dei caratteri convergono, trasformando la raccolta documentale in una testimonianza dinamica della vitalità del segno.</p>
 </div>
 
-<div class="noise-bg-area">
-    <div id="content">
-        <div class="image"><img src="https://picsum.photos/300/450?1"></div>
-        <div class="image"><img src="https://picsum.photos/500/350?2"></div>
-        <div class="image"><img src="https://picsum.photos/400/400?3"></div>
-        <div class="image"><img src="https://picsum.photos/350/500?4"></div>
-        <div class="image"><img src="https://picsum.photos/300/400?5"></div>
-        <div class="image"><img src="https://picsum.photos/500/380?6"></div>
-        <div class="image"><img src="https://picsum.photos/320/480?7"></div>
-        <div class="image"><img src="https://picsum.photos/450/300?8"></div>
-        <div class="image"><img src="https://picsum.photos/400/600?9"></div>
-        <div class="image"><img src="https://picsum.photos/300/300?10"></div>
-        <div class="image"><img src="https://picsum.photos/500/350?11"></div>
-        <div class="image"><img src="https://picsum.photos/300/400?12"></div>
+<div id="content">
+    <div class="image"><img src="https://picsum.photos/300/450?1"></div>
+    <div class="image"><img src="https://picsum.photos/500/350?2"></div>
+    <div class="image"><img src="https://picsum.photos/400/400?3"></div>
+    <div class="image"><img src="https://picsum.photos/350/500?4"></div>
+    <div class="image"><img src="https://picsum.photos/300/400?5"></div>
+    <div class="image"><img src="https://picsum.photos/500/380?6"></div>
+    <div class="image"><img src="https://picsum.photos/320/480?7"></div>
+    <div class="image"><img src="https://picsum.photos/450/300?8"></div>
+    <div class="image"><img src="https://picsum.photos/400/600?9"></div>
+    <div class="image"><img src="https://picsum.photos/300/300?10"></div>
+    <div class="image"><img src="https://picsum.photos/500/350?11"></div>
+    <div class="image"><img src="https://picsum.photos/300/400?12"></div>
+</div>
+
+<section id="specimen">
+    <div class="specimen-left">
+        <p class="specimen-lede">
+            What works well at large sizes—like tight spacing and dramatic contrast—often breaks down at smaller scales.
+            This typeface keeps shapes consistent across sizes thanks to automatic optical sizing.
+        </p>
+
+        <div>
+            <div class="scale-note">Automatic optical size</div>
+            <div class="scale-ruler">
+                <div><span class="scale-size">10px</span><span style="font-size:14px;">standard</span></div>
+                <div><span class="scale-size">20px</span><span style="font-size:18px;">standard</span></div>
+                <div><span class="scale-size">30px</span><span style="font-size:24px;">standard</span></div>
+                <div><span class="scale-size">40px</span><span style="font-size:32px;">standard</span></div>
+                <div><span class="scale-size">64px</span><span style="font-size:48px;">standard</span></div>
+            </div>
+        </div>
     </div>
 
-    <section id="specimen">
-        <div class="specimen-left">
-            <p class="specimen-lede">
-                What works well at large sizes—like tight spacing and dramatic contrast—often breaks down at smaller scales.
-                This typeface keeps shapes consistent across sizes thanks to automatic optical sizing.
-            </p>
-            <div>
-                <div class="scale-note">Automatic optical size</div>
-                <div class="scale-ruler">
-                    <div><span class="scale-size">10px</span><span style="font-size:14px;">standard</span></div>
-                    <div><span class="scale-size">20px</span><span style="font-size:18px;">standard</span></div>
-                    <div><span class="scale-size">30px</span><span style="font-size:24px;">standard</span></div>
-                    <div><span class="scale-size">40px</span><span style="font-size:32px;">standard</span></div>
-                    <div><span class="scale-size">64px</span><span style="font-size:48px;">standard</span></div>
-                </div>
-            </div>
+    <div class="specimen-right">
+        <div class="size-card">
+            <div class="size-header">small</div>
+            <div class="size-letter small">a</div>
+            <p class="size-copy">GT Standard at 50px<br>Ensures legibility for interfaces and dense layouts.</p>
         </div>
-        <div class="specimen-right">
-            <div class="size-card">
-                <div class="size-header">small</div>
-                <div class="size-letter small">a</div>
-                <p class="size-copy">GT Standard at 50px<br>Ensures legibility for interfaces and dense layouts.</p>
-            </div>
-            <div class="size-card">
-                <div class="size-header">medium</div>
-                <div class="size-letter medium">a</div>
-                <p class="size-copy">GT Standard at 90px<br>Balances personality and clarity for titles.</p>
-            </div>
-            <div class="size-card">
-                <div class="size-header">large</div>
-                <div class="size-letter large">a</div>
-                <p class="size-copy">GT Standard at 150px<br>Impactful for hero moments and signage.</p>
-            </div>
+        <div class="size-card">
+            <div class="size-header">medium</div>
+            <div class="size-letter medium">a</div>
+            <p class="size-copy">GT Standard at 90px<br>Balances personality and clarity for titles.</p>
         </div>
-    </section>
+        <div class="size-card">
+            <div class="size-header">large</div>
+            <div class="size-letter large">a</div>
+            <p class="size-copy">GT Standard at 150px<br>Impactful for hero moments and signage.</p>
+        </div>
+    </div>
+</section>
 
-    <section id="glyph-viewer">
-        <div class="glyph-left">
-            <h2>Glifi</h2>
-            <div class="glyph-preview">
-                <span id="glyph-display" class="glyph-character">A</span>
-                <div class="glyph-meta" id="glyph-meta">
-                    <span>Maiuscola</span>
-                    <span>U+0041</span>
-                </div>
+<section id="glyph-viewer">
+    <div class="glyph-left">
+        <h2>Glifi</h2>
+        <div class="glyph-preview">
+            <span id="glyph-display" class="glyph-character">A</span>
+            <div class="glyph-meta" id="glyph-meta">
+                <span>Maiuscola</span>
+                <span>U+0041</span>
             </div>
         </div>
-        <div class="glyph-right">
-            <div class="glyph-legend">
-                <span class="glyph-pill">Set base</span>
-                <span class="glyph-pill">Latino</span>
-                <span class="glyph-pill">Tutti</span>
-            </div>
-            <div id="glyph-grid" class="glyph-grid" aria-label="Glyph grid"></div>
+    </div>
+
+    <div class="glyph-right">
+        <div class="glyph-legend">
+            <span class="glyph-pill">Set base</span>
+            <span class="glyph-pill">Latino</span>
+            <span class="glyph-pill">Tutti</span>
         </div>
-    </section>
-</div> <script>
-/* ... (JS 代码部分保持不变) ... */
+        <div id="glyph-grid" class="glyph-grid" aria-label="Glyph grid"></div>
+    </div>
+</section>
+
+<script>
+/* ======================
+    SHARED LOGIC
+====================== */
 const title = document.getElementById("title");
 const textBlock = document.getElementById("text-block");
 
@@ -280,13 +301,27 @@ title.addEventListener("click", () => {
     textBlock.scrollIntoView({ behavior: "smooth", block: "center" });
 });
 
+/* ======================
+    GLYPH GRID INTERACTION
+====================== */
 const glyphGrid = document.getElementById("glyph-grid");
 const glyphDisplay = document.getElementById("glyph-display");
 const glyphMeta = document.getElementById("glyph-meta");
 
-const glyphLetters = [..."ABCDEFGHIJKLMNOPQRSTUVWXYZ", ..."abcdefghijklmnopqrstuvwxyz", ..."ÀÁÈÉÌÍÒÓÙÚÝ", ..."àáèéìíòóùúý", ..."0123456789"];
+const glyphLetters = [
+    ..."ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+    ..."abcdefghijklmnopqrstuvwxyz",
+    ..."ÀÁÈÉÌÍÒÓÙÚÝ",
+    ..."àáèéìíòóùúý",
+    ..."0123456789"
+];
+
 const smallCaps = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
-const glyphSymbols = [..."!&'()*.·,/.:;?¿¡@#[]{}", ..."«»", "\\", "-%‰…—_`^+<=>|~≈", "\"“”’", " $£¥€"];
+
+const glyphSymbols = [
+    ..."!&'()*.·,/.:;?¿¡@#[]{}",
+    ..."«»", "\\", "-%‰…—_`^+<=>|~≈", "\"“”’", " $£¥€"
+];
 
 let activeGlyph = null;
 
@@ -311,15 +346,18 @@ function addGlyph(char, options = {}) {
     cell.className = "glyph-cell";
     if (options.smallCaps) cell.classList.add("smallcaps");
     cell.textContent = char;
+
     cell.addEventListener("mouseenter", () => showGlyph(char, cell, false));
     cell.addEventListener("mouseleave", () => {
         if (activeGlyph) showGlyph(activeGlyph.char, activeGlyph.cell, false);
     });
     cell.addEventListener("click", () => showGlyph(char, cell, true));
+
     glyphGrid.appendChild(cell);
     return cell;
 }
 
+// Populate Grid
 let firstCell = null;
 glyphLetters.forEach((char) => {
     const cell = addGlyph(char);

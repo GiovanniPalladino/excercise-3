@@ -93,7 +93,6 @@ body {
     width: 100%;
     align-self: stretch; 
     position: relative; 
-    /* 去掉 overflow: hidden，否则弹出的图片会被父容器切掉 */
     overflow: visible; 
 }
 
@@ -102,41 +101,27 @@ body {
     transition: opacity 0.5s ease-in-out; 
 }
 
-/* 前景图：遵循 Grid 布局，正常裁切 */
 .image img.img-front {
     width: 100%;
     height: 100%;
     object-fit: cover;
 }
 
-/* 后层图片：打破 Grid 约束 */
 .image img.img-back {
     position: absolute;
-    /* 定位到父容器的中心 */
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%); /* 确保中心对齐 */
-    
-    /* 强制尺寸：屏幕宽度的 1/6，并保持正方形 */
+    transform: translate(-50%, -50%);
     width: 20vw; 
     height: 20vw;
-    
-    /* 核心：不裁切 */
     object-fit: contain; 
-    
     opacity: 0;
-    z-index: 100; /* 确保悬停图在最上层，不被其他网格遮挡 */
-    pointer-events: none; /* 防止鼠标晃动触发闪烁 */
+    z-index: 100;
+    pointer-events: none;
 }
 
-/* Hover 状态 */
-.image:hover img.img-front {
-    opacity: 0; 
-}
-
-.image:hover img.img-back {
-    opacity: 1; 
-}
+.image:hover img.img-front { opacity: 0; }
+.image:hover img.img-back { opacity: 1; }
 
 /* ======================
     LAYOUT LOGIC
@@ -153,6 +138,48 @@ body {
 .image:nth-child(10){ grid-column: 11 / span 5; grid-row: 28 / span 3; } 
 .image:nth-child(11){ grid-column: 10 / span 3; grid-row: 34 / span 2; } 
 .image:nth-child(12){ grid-column: 4 / span 4; grid-row: 37 / span 2; } 
+
+/* ======================
+   TYPO NOISE ZOOM
+====================== */
+#typo-noise {
+    height: 320vh;
+    background: #f3fcf4;
+    position: relative;
+}
+
+#noise-wrapper {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow: hidden;
+}
+
+#noise-container {
+    position: absolute;
+    inset: 0;
+    transform-origin: center center;
+    will-change: transform;
+}
+
+.noise-char {
+    position: absolute;
+    font-size: 9pt;
+    line-height: 1;
+    white-space: nowrap;
+    color: #2d7732;
+    transform-origin: center;
+    will-change: transform;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* la "x" finale */
+.noise-char.x {
+    font-size: 9pt;
+    font-weight: 600;
+}
+
 </style>
 </head>
 
@@ -220,6 +247,15 @@ body {
     </div>
 </div>
 
+<!-- ======================
+     TYPO NOISE ZOOM SECTION
+====================== -->
+<section id="typo-noise">
+    <div id="noise-wrapper">
+        <div id="noise-container"></div>
+    </div>
+</section>
+
 <script>
 const title = document.getElementById("title");
 const textBlock = document.getElementById("text-block");
@@ -238,6 +274,60 @@ window.addEventListener('load', () => {
 
 title.addEventListener("click", () => {
     textBlock.scrollIntoView({ behavior: "smooth", block: "center" });
+});
+
+/* ======================
+   TYPO NOISE ZOOM LOGIC
+====================== */
+document.addEventListener("DOMContentLoaded", () => {
+
+    const noiseContainer = document.getElementById("noise-container");
+
+    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    const NOISE_COUNT = 420;
+
+    let xChar = null; // la x finale
+
+    /* genera rumore */
+    for (let i = 0; i < NOISE_COUNT; i++) {
+        const span = document.createElement("span");
+        span.className = "noise-char";
+        span.textContent = chars[Math.floor(Math.random() * chars.length)];
+        span.style.left = Math.random() * 100 + "%";
+        span.style.top = Math.random() * 100 + "%";
+        noiseContainer.appendChild(span);
+    }
+
+    /* aggiungi una x minuscola, sempre presente */
+    xChar = document.createElement("span");
+    xChar.className = "noise-char x";
+    xChar.textContent = "x";
+    xChar.style.left = "50%";
+    xChar.style.top = "50%";
+    xChar.style.transform = "translate(-50%, -50%) scale(1)";
+    noiseContainer.appendChild(xChar);
+
+    window.addEventListener("scroll", () => {
+        const section = document.getElementById("typo-noise");
+        const rect = section.getBoundingClientRect();
+
+        const progress = Math.min(
+            Math.max(-rect.top / (rect.height - window.innerHeight), 0),
+            1
+        );
+
+        /* ZOOM REALE SENZA PERDITA QUALITÀ */
+        const scale = 1 + progress * 30;
+        noiseContainer.style.transform = `scale(${scale})`;
+        noiseContainer.style.opacity = 1 - progress * 1.1;
+
+        /* la x cresce dentro il rumore */
+        /* la x NON deve zoomare più del resto:
+   la X è già dentro noiseContainer quindi zooma insieme a tutto */
+xChar.style.opacity = 0.9 - progress * 0.2;
+
+    });
+
 });
 </script>
 

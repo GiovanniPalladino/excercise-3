@@ -73,7 +73,6 @@ body {
 /* ======================
     CONTENT GRID SYSTEM
 ====================== */
-/* 修改原有的 #content，去掉原来的背景图设置 */
 #content {
     margin-top: 110vh;
     padding: 100px 18%; 
@@ -82,26 +81,27 @@ body {
     grid-auto-rows: 80px; 
     gap: 32px; 
     justify-content: center;
-    position: relative; /* 确保内容在背景之上 */
-    z-index: 2;
+    position: relative; 
+    z-index: 2; /* 确保内容在背景图片之上 */
 }
 
-/* 新增：背景图片容器 */
+/* 背景图片容器：纵向拼接长图 */
 .bg-image-wrapper {
     position: absolute;
-    top: 110vh; /* 和 #content 的 margin-top 保持一致 */
+    top: 110vh; 
     left: 0;
     width: 100%;
-    z-index: 1; /* 放在 grid 内容下面 */
+    z-index: 1; 
     display: flex;
-    flex-direction: column; /* 纵向排列 */
+    flex-direction: column; 
 }
 
 .bg-image-wrapper img {
-    width: 100%;      /* 宽度撑满屏幕 */
-    display: block;   /* 消除图片间的缝隙 */
+    width: 100%;      
+    display: block;   
     height: auto;
 }
+
 /* ======================
     IMAGE HOVER LOGIC 
 ====================== */
@@ -140,7 +140,7 @@ body {
 .image:hover img.img-back { opacity: 1; }
 
 /* ======================
-    LAYOUT LOGIC
+    LAYOUT LOGIC (Grid Items)
 ====================== */
 .image:nth-child(1) { grid-column: 1 / span 4; grid-row: 3 / span 2; } 
 .image:nth-child(2) { grid-column: 6 / span 6; grid-row: 7 / span 3; } 
@@ -154,47 +154,6 @@ body {
 .image:nth-child(10){ grid-column: 11 / span 5; grid-row: 28 / span 3; } 
 .image:nth-child(11){ grid-column: 10 / span 3; grid-row: 34 / span 2; } 
 .image:nth-child(12){ grid-column: 4 / span 4; grid-row: 37 / span 2; } 
-
-/* ======================
-   TYPO NOISE ZOOM
-====================== */
-#typo-noise {
-    height: 320vh;
-    background: #f3fcf4;
-    position: relative;
-}
-
-#noise-wrapper {
-    position: sticky;
-    top: 0;
-    height: 100vh;
-    overflow: hidden;
-}
-
-#noise-container {
-    position: absolute;
-    inset: 0;
-    transform-origin: center center;
-    will-change: transform;
-}
-
-.noise-char {
-    position: absolute;
-    font-size: 9pt;
-    line-height: 1;
-    white-space: nowrap;
-    color: #2d7732;
-    transform-origin: center;
-    will-change: transform;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-}
-
-/* la "x" finale */
-.noise-char.x {
-    font-size: 9pt;
-    font-weight: 600;
-}
 
 </style>
 </head>
@@ -217,7 +176,9 @@ body {
     <img src="image/111.jpg" alt="bg2">
     <img src="image/222.jpg" alt="bg3">
     <img src="image/333.jpg" alt="bg4">
-    </div>
+    <img src="image/444.jpg" alt="bg5">
+    <img src="image/555.jpg" alt="bg6">
+</div>
 
 <div id="content">
     <div class="image">
@@ -270,18 +231,8 @@ body {
     </div>
 </div>
 
-<!-- ======================
-     TYPO NOISE ZOOM SECTION
-====================== -->
-<section id="typo-noise">
-    <div id="noise-wrapper">
-        <div id="noise-container"></div>
-    </div>
-</section>
-
 <script>
-
-    // SE REFRESH RIPARTE DA CAPO
+// 页面刷新回到顶部
 if ('scrollRestoration' in history) {
   history.scrollRestoration = 'manual';
 }
@@ -289,6 +240,7 @@ if ('scrollRestoration' in history) {
 const title = document.getElementById("title");
 const textBlock = document.getElementById("text-block");
 
+// 初始加载动画
 window.addEventListener('load', () => {
     setTimeout(() => {
         title.classList.add("visible");
@@ -301,62 +253,9 @@ window.addEventListener('load', () => {
     }, 1800);
 });
 
+// 点击标题平滑滚动
 title.addEventListener("click", () => {
     textBlock.scrollIntoView({ behavior: "smooth", block: "center" });
-});
-
-/* ======================
-   TYPO NOISE ZOOM LOGIC
-====================== */
-document.addEventListener("DOMContentLoaded", () => {
-
-    const noiseContainer = document.getElementById("noise-container");
-
-    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-    const NOISE_COUNT = 420;
-
-    let xChar = null; // la x finale
-
-    /* genera rumore */
-    for (let i = 0; i < NOISE_COUNT; i++) {
-        const span = document.createElement("span");
-        span.className = "noise-char";
-        span.textContent = chars[Math.floor(Math.random() * chars.length)];
-        span.style.left = Math.random() * 100 + "%";
-        span.style.top = Math.random() * 100 + "%";
-        noiseContainer.appendChild(span);
-    }
-
-    /* aggiungi una x minuscola, sempre presente */
-    xChar = document.createElement("span");
-    xChar.className = "noise-char x";
-    xChar.textContent = "x";
-    xChar.style.left = "50%";
-    xChar.style.top = "50%";
-    xChar.style.transform = "translate(-50%, -50%) scale(1)";
-    noiseContainer.appendChild(xChar);
-
-    window.addEventListener("scroll", () => {
-        const section = document.getElementById("typo-noise");
-        const rect = section.getBoundingClientRect();
-
-        const progress = Math.min(
-            Math.max(-rect.top / (rect.height - window.innerHeight), 0),
-            1
-        );
-
-        /* ZOOM REALE SENZA PERDITA QUALITÀ */
-        const scale = 1 + progress * 30;
-        noiseContainer.style.transform = `scale(${scale})`;
-        noiseContainer.style.opacity = 1 - progress * 1.1;
-
-        /* la x cresce dentro il rumore */
-        /* la x NON deve zoomare più del resto:
-   la X è già dentro noiseContainer quindi zooma insieme a tutto */
-xChar.style.opacity = 0.9 - progress * 0.2;
-
-    });
-
 });
 </script>
 

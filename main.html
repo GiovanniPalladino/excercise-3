@@ -1,364 +1,397 @@
 <!DOCTYPE html>
 <html lang="it">
-<head>
-<meta charset="UTF-8">
-<title>Organismo Tipografico - Minimalist Grid</title>
 
-<style>
-/* ======================
+<head>
+    <meta charset="UTF-8">
+    <title>Organismo Tipografico - Minimalist Grid</title>
+
+    <style>
+        /* ======================
     引入自定义字体
 ====================== */
-@font-face {
-    font-family: 'G15Font';
-    src: url('Cell-2901.ttf') format('truetype');
-    font-weight: normal;
-    font-style: normal;
-}
+        @font-face {
+            font-family: 'G15Font';
+            src: url('Cell-2901.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
 
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'G15Font', Arial, sans-serif;
-}
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'G15Font', Arial, sans-serif;
+        }
 
-body {
-    overflow-x: hidden;
-    background-color: #f3fcf4; 
-    color: #2d7732;            
-}
+        body {
+            overflow-x: hidden;
+            background-color: #f3fcf4;
+            color: #2d7732;
+        }
 
-/* ======================
+        /* ======================
     TITOLO & TEXT BLOCK
 ====================== */
-#title {
-    position: absolute;
-    left: 40px;
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 18px;
-    cursor: pointer;
-    z-index: 1000;
-    display: flex;
-    gap: 0.5em;
-    color: #2d7732;
-} 
-#title span {
-    display: inline-block;
-    opacity: 0;
-    transform: translateX(-20px);
-    transition: opacity 0.8s ease, transform 0.8s ease;
-}
-#title.visible span { opacity: 1; transform: translateX(0); }
-#title.visible span:nth-child(2) { transition-delay: 0.4s; }
-#title.fixed { position: fixed; top: 20px; transform: none; transition: top 1.2s ease; }
+        #title {
+            position: absolute;
+            left: 40px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 18px;
+            cursor: pointer;
+            z-index: 1000;
+            display: flex;
+            gap: 0.5em;
+            color: #2d7732;
+        }
 
-#text-block {
-    position: absolute;
-    top: 100%;
-    left: 400px;
-    width: 450px;
-    opacity: 0;
-    transition: top 1.2s ease, opacity 0.8s ease;
-    color: #2d7732;
-}
+        #title span {
+            display: inline-block;
+            opacity: 0;
+            transform: translateX(-20px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
 
-#text-block p {
-    font-size: 16px;
-    line-height: 1.6;
-    margin-bottom: 1.2em;
-    text-align: justify;
-}
+        #title.visible span {
+            opacity: 1;
+            transform: translateX(0);
+        }
 
-/* ======================
+        #title.visible span:nth-child(2) {
+            transition-delay: 0.4s;
+        }
+
+        #title.fixed {
+            position: fixed;
+            top: 20px;
+            transform: none;
+            transition: top 1.2s ease;
+        }
+
+        #text-block {
+            position: absolute;
+            top: 100%;
+            left: 400px;
+            width: 450px;
+            opacity: 0;
+            transition: top 1.2s ease, opacity 0.8s ease;
+            color: #2d7732;
+        }
+
+        #text-block p {
+            font-size: 16px;
+            line-height: 1.6;
+            margin-bottom: 1.2em;
+            text-align: justify;
+        }
+
+        /* ======================
     CONTENT GRID SYSTEM
 ====================== */
-/* 修改原有的 #content，去掉原来的背景图设置 */
-#content {
-    margin-top: 110vh;
-    padding: 100px 18%; 
-    display: grid;
-    grid-template-columns: repeat(12, 1fr);
-    grid-auto-rows: 80px; 
-    gap: 32px; 
-    justify-content: center;
-    position: relative; /* 确保内容在背景之上 */
-    z-index: 2;
-}
+        #content {
+            margin-top: 110vh;
+            padding: 100px 18%;
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            grid-auto-rows: 80px;
+            gap: 32px;
+            justify-content: center;
+            position: relative;
+            z-index: 2;
+        }
 
-/* 新增：背景图片容器 */
-.bg-image-wrapper {
-    position: absolute;
-    top: 110vh; /* 和 #content 的 margin-top 保持一致 */
-    left: 0;
-    width: 100%;
-    z-index: 1; /* 放在 grid 内容下面 */
-    display: flex;
-    flex-direction: column; /* 纵向排列 */
-}
+        .bg-image-wrapper {
+            position: absolute;
+            top: 110vh;
+            left: 0;
+            width: 100%;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+        }
 
-.bg-image-wrapper img {
-    width: 100%;      /* 宽度撑满屏幕 */
-    display: block;   /* 消除图片间的缝隙 */
-    height: auto;
-}
-/* ======================
-    IMAGE HOVER LOGIC 
+        .bg-image-wrapper img {
+            width: 100%;
+            display: block;
+            height: auto;
+        }
+
+        /* IMAGE HOVER LOGIC */
+        .image {
+            width: 100%;
+            align-self: stretch;
+            position: relative;
+            overflow: visible;
+        }
+
+        .image img {
+            display: block;
+            transition: opacity 0.5s ease-in-out;
+        }
+
+        .image img.img-front {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .image img.img-back {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 20vw;
+            height: 20vw;
+            object-fit: contain;
+            opacity: 0;
+            z-index: 100;
+            pointer-events: none;
+        }
+
+        .image:hover img.img-front {
+            opacity: 0;
+        }
+
+        .image:hover img.img-back {
+            opacity: 1;
+        }
+
+        /* Grid Items Positioning */
+        .image:nth-child(1) {
+            grid-column: 1 / span 4;
+            grid-row: 3 / span 2;
+        }
+
+        .image:nth-child(2) {
+            grid-column: 6 / span 6;
+            grid-row: 6 / span 3;
+        }
+
+        .image:nth-child(3) {
+            grid-column: 10 / span 4;
+            grid-row: 1 / span 2;
+        }
+
+        .image:nth-child(4) {
+            grid-column: 2 / span 4;
+            grid-row: 12 / span 4;
+        }
+
+        .image:nth-child(5) {
+            grid-column: 10 / span 3;
+            grid-row: 11 / span 2;
+        }
+
+        .image:nth-child(6) {
+            grid-column: 8 / span 9;
+            grid-row: 16 / span 3;
+        }
+
+        .image:nth-child(7) {
+            grid-column: 1 / span 3;
+            grid-row: 20 / span 2;
+        }
+
+        .image:nth-child(8) {
+            grid-column: 6 / span 4;
+            grid-row: 22 / span 4;
+        }
+
+        .image:nth-child(9) {
+            grid-column: 1 / span 6;
+            grid-row: 29 / span 4;
+        }
+
+        .image:nth-child(10) {
+            grid-column: 11 / span 5;
+            grid-row: 27 / span 3;
+        }
+
+        .image:nth-child(11) {
+            grid-column: 10 / span 3;
+            grid-row: 33 / span 2;
+        }
+
+        .image:nth-child(12) {
+            grid-column: 4 / span 4;
+            grid-row: 36 / span 3;
+        }
+
+        .grid-spacer {
+            grid-column: 1 / -1;
+            grid-row: 39 / span 6;
+            pointer-events: none;
+        }
+
+
+        /* ======================
+    X ZOOM SECTION
 ====================== */
-.image {
-    width: 100%;
-    align-self: stretch; 
-    position: relative; 
-    overflow: visible; 
+        #typo-noise {
+            height: 450vh;
+            background: #f3fcf4;
+            position: relative;
+            z-index: 10;
+            margin-top: -150px;
+        }
+
+        #noise-container {
+            position: sticky;
+            top: 0;
+
+            width: 100%;
+            height: 100vh;
+
+            display: flex;
+            justify-content: center;
+
+            /* 修改这里 */
+            align-items: flex-start;
+            /* 从居中改为顶部对齐 */
+            padding-top: 0vh;
+            /* ← 现在这个会真的生效了 */
+        }
+#zoom-x-svg {
+    width: 6px; 
+    height: 6px;
+    will-change: width, height, transform;
+    transform-origin: center center; 
+    overflow: visible; /* 允许内部文字超出 100x100 的画布 */
 }
 
-.image img {
-    display: block;
-    transition: opacity 0.5s ease-in-out; 
+#zoom-x-svg text {
+    font-family: 'G15Font', sans-serif;
+    fill: #2d7732;
+    text-anchor: middle;
+    dominant-baseline: middle; 
+    transition: opacity 0.3s ease; /* 让出现更自然 */
 }
-
-.image img.img-front {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.image img.img-back {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 20vw; 
-    height: 20vw;
-    object-fit: contain; 
-    opacity: 0;
-    z-index: 100;
-    pointer-events: none;
-}
-
-.image:hover img.img-front { opacity: 0; }
-.image:hover img.img-back { opacity: 1; }
-
-/* ======================
-    LAYOUT LOGIC
-====================== */
-.image:nth-child(1) { grid-column: 1 / span 4; grid-row: 3 / span 2; } 
-.image:nth-child(2) { grid-column: 6 / span 6; grid-row: 7 / span 3; } 
-.image:nth-child(3) { grid-column: 10 / span 4; grid-row: 1 / span 2; } 
-.image:nth-child(4) { grid-column: 2 / span 4; grid-row: 13 / span 4; } 
-.image:nth-child(5) { grid-column: 10 / span 3; grid-row: 12 / span 2; } 
-.image:nth-child(6) { grid-column: 8 / span 9; grid-row: 17 / span 3; } 
-.image:nth-child(7) { grid-column: 1 / span 3; grid-row: 21 / span 2; } 
-.image:nth-child(8) { grid-column: 6 / span 4; grid-row: 23 / span 4; } 
-.image:nth-child(9) { grid-column: 1 / span 6; grid-row: 30 / span 4; } 
-.image:nth-child(10){ grid-column: 11 / span 5; grid-row: 28 / span 3; } 
-.image:nth-child(11){ grid-column: 10 / span 3; grid-row: 34 / span 2; } 
-.image:nth-child(12){ grid-column: 4 / span 4; grid-row: 37 / span 2; } 
-
-/* ======================
-   TYPO NOISE ZOOM
-====================== */
-#typo-noise {
-    height: 320vh;
-    background: #f3fcf4;
-    position: relative;
-}
-
-#noise-wrapper {
-    position: sticky;
-    top: 0;
-    height: 100vh;
-    overflow: hidden;
-}
-
-#noise-container {
-    position: absolute;
-    inset: 0;
-    transform-origin: center center;
-    will-change: transform;
-}
-
-.noise-char {
-    position: absolute;
-    font-size: 9pt;
-    line-height: 1;
-    white-space: nowrap;
-    color: #2d7732;
-    transform-origin: center;
-    will-change: transform;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-}
-
-/* la "x" finale */
-.noise-char.x {
-    font-size: 9pt;
-    font-weight: 600;
-}
-
-</style>
+    </style>
 </head>
 
 <body>
 
-<div id="title">
-    <span>Organismo</span>
-    <span>Tipografico</span>
-</div>
-
-<div id="text-block">
-    <p>Il nostro archivio interpreta il segno grafico attraverso la lente della biologia cellulare, elevando la lettera a unità minima e vitale del linguaggio. Come la cellula rappresenta il mattone fondamentale della vita, così ogni carattere racchiude in sé un codice morfologico che si evolve e si adatta nel tempo.</p>
-    <p>Attraverso questa analogia, l’archivio non si limita a catalogare forme, ma si costituisce come un vero e proprio organismo linguistico, dove la storia della tipografia viene riletta come un processo di sviluppo biologico e strutturale.</p>
-    <p>Adottando il rigore scientifico della biologia moderna, analizziamo l’evoluzione dei caratteri come una serie di mutazioni organiche.</p>
-</div>
-
-<div class="bg-image-wrapper">
-    <img src="image/noise.jpg" alt="bg1">
-    <img src="image/111.jpg" alt="bg2">
-    <img src="image/222.jpg" alt="bg3">
-    <img src="image/333.jpg" alt="bg4">
+    <div id="title">
+        <span>Organismo</span>
+        <span>Tipografico</span>
     </div>
 
-<div id="content">
-    <div class="image">
-        <img src="image/f4.png" class="img-front">
-        <img src="image/www2.png" class="img-back">
+    <div id="text-block">
+        <p>Il nostro archivio interpreta il segno grafico attraverso la lente della biologia cellulare, elevando la
+            lettera a unità minima e vitale del linguaggio. Come la cellula rappresenta il mattone fondamentale della
+            vita, così ogni carattere racchiude in sé un codice morfologico che si evolve e si adatta nel tempo.</p>
+        <p>Attraverso questa analogia, l’archivio non si limita a catalogare forme, ma si costituisce come un vero e
+            proprio organismo linguistico, dove la storia della tipografia viene riletta come un processo di sviluppo
+            biologico e strutturale.</p>
+        <p>Adottando il rigore scientifico della biologia moderna, analizziamo l’evoluzione dei caratteri come una serie
+            di mutazioni organiche.</p>
     </div>
-    <div class="image">
-        <img src="image/f9.png" class="img-front">
-        <img src="image/www1.png" class="img-back">
-    </div>
-    <div class="image">
-        <img src="image/ff8.png" class="img-front">
-        <img src="image/www0.png" class="img-back">
-    </div>
-    <div class="image">
-        <img src="image/f6.png" class="img-front">
-        <img src="image/www9.png" class="img-back">
-    </div>
-    <div class="image">
-        <img src="image/f13.png" class="img-front">
-        <img src="image/www0.png" class="img-back">
-    </div>
-    <div class="image">
-        <img src="image/f18.png" class="img-front">
-        <img src="image/www6.png" class="img-back">
-    </div>
-    <div class="image">
-        <img src="image/f3.png" class="img-front">
-        <img src="image/www4.png" class="img-back">
-    </div>
-    <div class="image">
-        <img src="image/f12.png" class="img-front">
-        <img src="image/www5.png" class="img-back">
-    </div>
-    <div class="image">
-        <img src="image/ff2.png" class="img-front">
-        <img src="image/www0.png" class="img-back">
-    </div>
-    <div class="image">
-        <img src="image/f17.png" class="img-front">
-        <img src="image/www8.png" class="img-back">
-    </div>
-    <div class="image">
-        <img src="image/f7.png" class="img-front">
-        <img src="image/www7.png" class="img-back">
-    </div>
-    <div class="image">
-        <img src="image/ff1.png" class="img-front">
-        <img src="image/www0.png" class="img-back">
-    </div>
-</div>
 
-<!-- ======================
-     TYPO NOISE ZOOM SECTION
-====================== -->
-<section id="typo-noise">
-    <div id="noise-wrapper">
-        <div id="noise-container"></div>
+    <div class="bg-image-wrapper">
+        <img src="image/noise.jpg" alt="bg1">
+        <img src="image/111.jpg" alt="bg2">
+        <img src="image/222.jpg" alt="bg3">
+        <img src="image/333.jpg" alt="bg4">
+        <img src="image/444.jpg" alt="bg5">
     </div>
-</section>
 
-<script>
+    <div id="content">
+        <div class="image"><img src="image/f4.png" class="img-front"><img src="image/www2.png" class="img-back"></div>
+        <div class="image"><img src="image/f9.png" class="img-front"><img src="image/www1.png" class="img-back"></div>
+        <div class="image"><img src="image/ff8.png" class="img-front"><img src="image/www0.png" class="img-back"></div>
+        <div class="image"><img src="image/f6.png" class="img-front"><img src="image/www9.png" class="img-back"></div>
+        <div class="image"><img src="image/f13.png" class="img-front"><img src="image/www0.png" class="img-back"></div>
+        <div class="image"><img src="image/f18.png" class="img-front"><img src="image/www6.png" class="img-back"></div>
+        <div class="image"><img src="image/f3.png" class="img-front"><img src="image/www4.png" class="img-back"></div>
+        <div class="image"><img src="image/f12.png" class="img-front"><img src="image/www5.png" class="img-back"></div>
+        <div class="image"><img src="image/ff2.png" class="img-front"><img src="image/www0.png" class="img-back"></div>
+        <div class="image"><img src="image/f17.png" class="img-front"><img src="image/www8.png" class="img-back"></div>
+        <div class="image"><img src="image/f7.png" class="img-front"><img src="image/www7.png" class="img-back"></div>
+        <div class="image"><img src="image/ff1.png" class="img-front"><img src="image/www0.png" class="img-back"></div>
+        <div class="grid-spacer"></div>
 
-    // SE REFRESH RIPARTE DA CAPO
-if ('scrollRestoration' in history) {
-  history.scrollRestoration = 'manual';
-}
+    </div>
 
-const title = document.getElementById("title");
-const textBlock = document.getElementById("text-block");
+    <section id="typo-noise">
+        <div id="noise-container">
+<svg id="zoom-x-svg" viewBox="0 0 100 100">
+    <text id="x1" x="50" y="50" font-size="110">x</text>
+    <text id="x2" x="160" y="60" font-size="80" style="opacity: 0;">x</text>
+    <text id="x3" x="240" y="70" font-size="40" style="opacity: 0;">x</text>
+</svg>
+        </div>
+    </section>
 
-window.addEventListener('load', () => {
-    setTimeout(() => {
-        title.classList.add("visible");
-    }, 300);
+    <script>
+        if ('scrollRestoration' in history) {
+            history.scrollRestoration = 'manual';
+        }
 
-    setTimeout(() => {
-        title.classList.add("fixed");
-        textBlock.style.top = "50%";
-        textBlock.style.opacity = "1";
-    }, 1800);
-});
+        const title = document.getElementById("title");
+        const textBlock = document.getElementById("text-block");
 
-title.addEventListener("click", () => {
-    textBlock.scrollIntoView({ behavior: "smooth", block: "center" });
-});
+        window.addEventListener('load', () => {
+            setTimeout(() => { title.classList.add("visible"); }, 300);
+            setTimeout(() => {
+                title.classList.add("fixed");
+                textBlock.style.top = "50%";
+                textBlock.style.opacity = "1";
+            }, 1800);
+        });
 
-/* ======================
-   TYPO NOISE ZOOM LOGIC
-====================== */
-document.addEventListener("DOMContentLoaded", () => {
+        title.addEventListener("click", () => {
+            textBlock.scrollIntoView({ behavior: "smooth", block: "center" });
+        });
 
-    const noiseContainer = document.getElementById("noise-container");
+   window.addEventListener("scroll", () => {
+    const section = document.getElementById("typo-noise");
+    const zoomSVG = document.getElementById("zoom-x-svg");
+    const x1 = document.getElementById("x1");
+    const x2 = document.getElementById("x2");
+    const x3 = document.getElementById("x3");
+    
+    if (!section || !zoomSVG) return;
 
-    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-    const NOISE_COUNT = 420;
+    const rect = section.getBoundingClientRect();
+    const windowHeight = window.innerHeight;
 
-    let xChar = null; // la x finale
+    // 计算总进度 0-1
+    let progress = Math.min(Math.max(-rect.top / (rect.height - windowHeight), 0), 1);
 
-    /* genera rumore */
-    for (let i = 0; i < NOISE_COUNT; i++) {
-        const span = document.createElement("span");
-        span.className = "noise-char";
-        span.textContent = chars[Math.floor(Math.random() * chars.length)];
-        span.style.left = Math.random() * 100 + "%";
-        span.style.top = Math.random() * 100 + "%";
-        noiseContainer.appendChild(span);
+    // --- 阶段 1: 第一个 x 的缩放 (进度 0.0 到 0.6) ---
+    // 进度 0.6 结束，分母设为 0.6
+    let p1 = Math.min(progress / 0.6, 1); 
+    const baseSize = 10;
+    const maxSize = 400; 
+    const currentSize = baseSize + Math.pow(p1, 3) * maxSize;
+
+    zoomSVG.style.width = currentSize + "px";
+    zoomSVG.style.height = currentSize + "px";
+    zoomSVG.style.transform = `translate(-105 %, 60%)`;
+
+    // --- 阶段 2: 第二个 x 出现 (进度 0.6 到 0.8) ---
+    if (progress > 0.6) {
+        // 映射 0.6-0.8 为 0-1 进度，行程是 0.2
+        let p2 = Math.min((progress - 0.6) / 0.2, 1);
+        x2.style.opacity = p2;
+        x2.setAttribute('x', 140 + (20 * p2)); 
+    } else {
+        x2.style.opacity = 0;
     }
 
-    /* aggiungi una x minuscola, sempre presente */
-    xChar = document.createElement("span");
-    xChar.className = "noise-char x";
-    xChar.textContent = "x";
-    xChar.style.left = "50%";
-    xChar.style.top = "50%";
-    xChar.style.transform = "translate(-50%, -50%) scale(1)";
-    noiseContainer.appendChild(xChar);
-
-    window.addEventListener("scroll", () => {
-        const section = document.getElementById("typo-noise");
-        const rect = section.getBoundingClientRect();
-
-        const progress = Math.min(
-            Math.max(-rect.top / (rect.height - window.innerHeight), 0),
-            1
-        );
-
-        /* ZOOM REALE SENZA PERDITA QUALITÀ */
-        const scale = 1 + progress * 30;
-        noiseContainer.style.transform = `scale(${scale})`;
-        noiseContainer.style.opacity = 1 - progress * 1.1;
-
-        /* la x cresce dentro il rumore */
-        /* la x NON deve zoomare più del resto:
-   la X è già dentro noiseContainer quindi zooma insieme a tutto */
-xChar.style.opacity = 0.9 - progress * 0.2;
-
-    });
-
+    // --- 阶段 3: 第三个 x 出现 (进度 0.8 到 1.0) ---
+    if (progress > 0.8) {
+        // 映射 0.8-1.0 为 0-1 进度，行程是 0.2
+        let p3 = Math.min((progress - 0.8) / 0.2, 1);
+        x3.style.opacity = p3;
+        x3.setAttribute('x', 220 + (20 * p3));
+    } else {
+        x3.style.opacity = 0;
+    }
 });
-</script>
+
+    </script>
 
 </body>
+
 </html>

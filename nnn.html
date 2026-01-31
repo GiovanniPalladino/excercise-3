@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>G15Font — Kinetic Journey</title>
+    <style>
+        @font-face {
+            font-family: 'CellFont';
+            src: url('Cell-2901.ttf') format('truetype');
+        }
+
+        :root {
+            --primary: #2d7732;
+            --bg-light: #f3fcf4;
+        }
+
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+            font-family: 'CellFont', sans-serif !important; /* 强制全局使用 CellFont */
+        }
+
+        body {
+            background: var(--bg-light);
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* 外部容器：控制总滚动行程 */
+        .main-scroll-container {
+            height: 300vh; 
+        }
+
+        .sticky-viewport {
+            position: sticky;
+            top: 0;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .horizontal-slider {
+            display: flex;
+            width: 200vw;
+            height: 100vh;
+            will-change: transform;
+        }
+
+        section {
+            width: 100vw;
+            height: 100vh;
+            flex-shrink: 0;
+            position: relative;
+        }
+
+        /* --- Section 1: Canvas --- */
+        #section1 canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+            cursor: grab;
+        }
+
+        /* --- Section 2: Glyph Viewer (一模一样的视觉效果) --- */
+        #section2 {
+            padding: 60px 40px;
+            display: grid;
+            grid-template-columns: minmax(360px, 0.9fr) minmax(420px, 1.1fr);
+            gap: 48px;
+            color: var(--primary);
+            background: var(--bg-light);
+            height: 100vh;
+            overflow: hidden; /* 整体不滚动 */
+        }
+        
+        #section2 .glyph-left {
+            display: flex;
+            flex-direction: column;
+        }
+
+        #section2 .glyph-left h2 { 
+            font-size: 24px; 
+            letter-spacing: 0.08em; 
+            text-transform: uppercase; 
+            margin-bottom: 18px; 
+            font-weight: 400; 
+        }
+
+        #section2 .glyph-preview { 
+            border: 1px solid var(--primary); 
+            position: relative; 
+            flex-grow: 1; 
+            margin-bottom: 20px;
+            display: grid; 
+            place-items: center;
+        }
+
+        #section2 .glyph-character { 
+            font-size: clamp(220px, 28vw, 340px); 
+            line-height: 1; 
+        }
+
+        #section2 .glyph-meta { 
+            position: absolute; 
+            left: 20px; 
+            bottom: 16px; 
+            display: flex; 
+            gap: 16px; 
+            font-size: 13px; 
+            opacity: 0.8; 
+        }
+
+        #section2 .glyph-right { 
+            display: flex;
+            flex-direction: column;
+            max-height: calc(100vh - 120px); 
+            overflow-y: auto; /* 仅右侧纵向滚动 */
+            overflow-x: hidden; /* 禁止横向滑动 */
+            padding-right: 12px; 
+        }
+
+        /* 自定义滚动条 */
+        #section2 .glyph-right::-webkit-scrollbar { width: 4px; }
+        #section2 .glyph-right::-webkit-scrollbar-thumb { background: var(--primary); }
+
+        #section2 .glyph-legend { 
+            display: flex; 
+            gap: 10px; 
+            flex-wrap: wrap; 
+            position: sticky; 
+            top: 0; 
+            z-index: 10; 
+            background: var(--bg-light); 
+            padding-bottom: 15px; 
+        }
+
+        #section2 .glyph-toggle { 
+            padding: 8px 14px; 
+            border: 1px solid var(--primary); 
+            border-radius: 14px; 
+            background: transparent; 
+            font-size: 11px; 
+            text-transform: uppercase; 
+            cursor: pointer; 
+            transition: 0.2s;
+        }
+
+        #section2 .glyph-toggle.active { 
+            background: var(--primary); 
+            color: var(--bg-light); 
+        }
+
+        #section2 .glyph-group { 
+            margin-top: 24px; 
+            padding-top: 16px; 
+            border-top: 1px solid var(--primary); 
+        }
+
+        #section2 .glyph-group-title { 
+            font-size: 12px; 
+            text-transform: uppercase; 
+            margin-bottom: 12px; 
+            font-weight: bold; 
+        }
+
+        #section2 .glyph-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(64px, 1fr)); 
+            gap: 8px; 
+        }
+
+        #section2 .glyph-cell { 
+            aspect-ratio: 1; 
+            border: 1px solid var(--primary); 
+            background: transparent; 
+            font-size: 26px; 
+            display: grid; 
+            place-items: center; 
+            cursor: pointer; 
+            color: var(--primary); 
+            transition: 0.1s;
+        }
+
+        #section2 .glyph-cell:hover, #section2 .glyph-cell.active { 
+            background: var(--primary); 
+            color: var(--bg-light); 
+        }
+
+        #section2 .smallcaps { 
+            font-variant-caps: small-caps; 
+            font-feature-settings: "smcp" 1; 
+        }
+
+        @media (max-width: 900px) {
+            #section2 { grid-template-columns: 1fr; overflow-y: auto; }
+            #section2 .glyph-right { max-height: none; overflow: visible; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="main-scroll-container">
+    <div class="sticky-viewport">
+        <div class="horizontal-slider" id="slider">
+            
+            <section id="section1">
+                <canvas id="canvas"></canvas>
+            </section>
+
+            <section id="section2">
+                <div class="glyph-left">
+                    <h2>Glifi</h2>
+                    <div class="glyph-preview">
+                        <span id="glyph-display" class="glyph-character">A</span>
+                        <div id="glyph-meta" class="glyph-meta">
+                            <span>Maiuscola</span><span>U+0041</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="glyph-right" id="glyph-scroll-area">
+                    <div class="glyph-legend">
+                        <button class="glyph-toggle active" data-set="maiuscola">maiuscola</button>
+                        <button class="glyph-toggle" data-set="minuscola">minuscola</button>
+                        <button class="glyph-toggle" data-set="maiuscoletto">maiuscoletto</button>
+                        <button class="glyph-toggle" data-set="accenti">accenti</button>
+                        <button class="glyph-toggle" data-set="numeri">numeri</button>
+                        <button class="glyph-toggle" data-set="glifi">glifi</button>
+                    </div>
+                    <div id="glyph-groups"></div>
+                </div>
+            </section>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    // --- 滚动逻辑 ---
+    const slider = document.getElementById('slider');
+    const scrollContainer = document.querySelector('.main-scroll-container');
+    
+    window.addEventListener('scroll', () => {
+        const scrollTop = window.scrollY;
+        const maxScroll = scrollContainer.offsetHeight - window.innerHeight;
+        const scrollPercent = scrollTop / maxScroll;
+
+        let moveX = 0;
+        if(scrollPercent > 0.4) {
+            moveX = ((scrollPercent - 0.4) / 0.6) * 100;
+        }
+        slider.style.transform = `translateX(-${moveX}vw)`;
+
+        window.globalScatterProgress = Math.min(scrollPercent / 0.4, 1);
+    });
+
+    // --- Section 1: Canvas (带 Hero 效果) ---
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+    window.addEventListener('resize', resize);
+    resize();
+
+    const letters = "qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM".split("");
+    const points = [];
+    const radius = 240;
+    const perspective = 1000;
+    let rotX = 0, rotY = 0, isDragging = false, lastMouseX = 0, lastMouseY = 0;
+
+    letters.forEach((char, i) => {
+        const phi = Math.acos(1 - 2 * (i + 0.5) / letters.length);
+        const theta = Math.PI * (1 + Math.sqrt(5)) * i;
+        const sx = radius * Math.sin(phi) * Math.cos(theta);
+        const sy = radius * Math.sin(phi) * Math.sin(theta);
+        const sz = radius * Math.cos(phi);
+        points.push({
+            char, x: sx, y: sy, z: sz, sx: sx, sy: sy, sz: sz,
+            scatterX: (Math.random() - 0.5) * 2000, scatterY: (Math.random() - 0.5) * 2000, scatterZ: (Math.random() - 0.5) * 1500,
+            projX: 0, projY: 0, isHero: false, heroProgress: 0
+        });
+    });
+
+    canvas.addEventListener('mousedown', e => { isDragging = true; lastMouseX = e.clientX; lastMouseY = e.clientY; });
+    window.addEventListener('mousemove', e => {
+        if (isDragging) {
+            rotY += (e.clientX - lastMouseX) * 0.005;
+            rotX += (e.clientY - lastMouseY) * 0.005;
+            lastMouseX = e.clientX; lastMouseY = e.clientY;
+        }
+    });
+    window.addEventListener('mouseup', () => isDragging = false);
+
+    canvas.addEventListener('click', (e) => {
+        if (Math.abs(lastMouseX - e.clientX) > 5) return;
+        const rect = canvas.getBoundingClientRect();
+        const mouseX = e.clientX - rect.left;
+        const mouseY = e.clientY - rect.top;
+        let closest = null, minD = 35;
+        points.forEach(p => {
+            const d = Math.hypot(mouseX - p.projX, mouseY - p.projY);
+            if (d < minD) { minD = d; closest = p; }
+        });
+        if (closest) { points.forEach(p => p.isHero = false); closest.isHero = true; }
+    });
+
+    function rotatePoint(p, ax, ay) {
+        let y1 = p.y * Math.cos(ax) - p.z * Math.sin(ax);
+        let z1 = p.y * Math.sin(ax) + p.z * Math.cos(ax);
+        let x2 = p.x * Math.cos(ay) + z1 * Math.sin(ay);
+        let z2 = -p.x * Math.sin(ay) + z1 * Math.cos(ay);
+        return { x: x2, y: y1, z: z2 };
+    }
+
+    function draw() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        let scatterProgress = window.globalScatterProgress || 0;
+        if (!isDragging) { rotY += 0.001; rotX += 0.0005; }
+        points.forEach((p) => {
+            p.heroProgress += (p.isHero ? 1 - p.heroProgress : 0 - p.heroProgress) * 0.08;
+            const destX = p.sx + p.scatterX * scatterProgress;
+            const destY = p.sy + p.scatterY * scatterProgress;
+            const destZ = p.sz + p.scatterZ * scatterProgress;
+            p.x += (destX - p.x) * 0.1; p.y += (destY - p.y) * 0.1; p.z += (destZ - p.z) * 0.1;
+            const rotated = rotatePoint(p, rotX, rotY);
+            const scale = perspective / (perspective + rotated.z);
+            let px = rotated.x * scale + canvas.width / 2;
+            let py = rotated.y * scale + canvas.height / 2;
+            let pSize = scale * 22;
+            const targetX = canvas.width * 0.8; const targetY = canvas.height * 0.5; const targetSize = canvas.height * 0.5;
+            const finalX = px + (targetX - px) * p.heroProgress;
+            const finalY = py + (targetY - py) * p.heroProgress;
+            const finalSize = pSize + (targetSize - pSize) * p.heroProgress;
+            p.projX = finalX; p.projY = finalY;
+            const alpha = Math.max(0.1, 1 - (rotated.z + radius) / (radius * 4));
+            ctx.font = `${finalSize}px CellFont`;
+            ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+            ctx.fillStyle = `rgba(45, 119, 119, ${p.isHero ? 1 : alpha * (1 - scatterProgress * 0.7)})`;
+            ctx.fillStyle = `rgba(45, 119, 50, ${p.isHero ? 1 : alpha * (1 - scatterProgress * 0.7)})`;
+            ctx.fillText(p.char, finalX, finalY);
+        });
+        requestAnimationFrame(draw);
+    }
+    draw();
+
+    // --- Section 2: Glyph Viewer (强制 CellFont 且局部滚动) ---
+    const glyphDisplay = document.getElementById("glyph-display");
+    const glyphMeta = document.getElementById("glyph-meta");
+    const groupsContainer = document.getElementById("glyph-groups");
+    const scrollArea = document.getElementById("glyph-scroll-area");
+
+    const glyphSets = {
+        maiuscola: { label: "Maiuscola", items: "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("") },
+        minuscola: { label: "Minuscola", items: "abcdefghijklmnopqrstuvwxyz".split("") },
+        maiuscoletto: { label: "Maiuscoletto", items: "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split(""), smallCaps: true },
+        accenti: { label: "Accenti", items: [..."ÀÁÈÉÌÍÒÓÙÚÝàáèéìíòóùúý"] },
+        numeri: { label: "Numeri", items: "0123456789".split("") },
+        glifi: { label: "Glifi", items: [..."!&'()*.·,/.:;?¿¡@#[]{}", ..."«»", ..."\\", ..."-%‰…—_`^+<=>|~≈", ..."\"“”’", ..." $£¥€"] }
+    };
+
+    function showGlyph(char, cell, persist = false) {
+        const isSmallCaps = cell.classList.contains("smallcaps");
+        const label = isSmallCaps ? "Maiuscoletto" : (char === char.toUpperCase() && char !== char.toLowerCase() ? "Maiuscola" : "Minuscola");
+        const code = char.codePointAt(0).toString(16).toUpperCase().padStart(4, "0");
+        glyphDisplay.textContent = char;
+        glyphDisplay.style.fontVariantCaps = isSmallCaps ? "small-caps" : "normal";
+        glyphMeta.innerHTML = `<span>${label}</span><span>U+${code}</span>`;
+        if (persist) {
+            document.querySelectorAll(".glyph-cell.active").forEach(el => el.classList.remove("active"));
+            cell.classList.add("active");
+        }
+    }
+
+    function buildGroups() {
+        Object.entries(glyphSets).forEach(([key, set]) => {
+            const group = document.createElement("section");
+            group.className = "glyph-group";
+            group.id = `group-${key}`;
+            const title = document.createElement("div");
+            title.className = "glyph-group-title";
+            title.textContent = set.label;
+            const grid = document.createElement("div");
+            grid.className = "glyph-grid";
+            set.items.forEach(char => {
+                const cell = document.createElement("button");
+                cell.className = "glyph-cell";
+                cell.textContent = char;
+                if (set.smallCaps) cell.classList.add("smallcaps");
+                cell.addEventListener("mouseenter", () => showGlyph(char, cell));
+                cell.addEventListener("click", () => showGlyph(char, cell, true));
+                grid.appendChild(cell);
+            });
+            group.appendChild(title); group.appendChild(grid);
+            groupsContainer.appendChild(group);
+        });
+    }
+    buildGroups();
+
+    // 修复锚点滚动，确保在右侧容器内滑动
+    document.querySelectorAll(".glyph-toggle").forEach(btn => {
+        btn.addEventListener("click", () => {
+            const target = document.getElementById(`group-${btn.dataset.set}`);
+            if (target) {
+                document.querySelectorAll(".glyph-toggle").forEach(b => b.classList.remove("active"));
+                btn.classList.add("active");
+                target.scrollIntoView({ behavior: "smooth", block: "start" });
+            }
+        });
+    });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<title>Organismo Tipografico - Minimalist Grid</title>
+
+<style>
+@font-face {
+    font-family: 'G15Font';
+    src: url('Cell-2901.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'G15Font', Arial, sans-serif;
+}
+
+body {
+    overflow-x: hidden;
+    background-color: #f3fcf4;
+    color: #2d7732;
+}
+
+/* ======================
+    TITOLO & TEXT BLOCK
+====================== */
+#title {
+    position: absolute;
+    left: 40px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 18px;
+    cursor: pointer;
+    z-index: 1000;
+    display: flex;
+    gap: 0.5em;
+    color: #2d7732;
+}
+#title span {
+    display: inline-block;
+    opacity: 0;
+    transform: translateX(-20px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+}
+#title.visible span { opacity: 1; transform: translateX(0); }
+#title.visible span:nth-child(2) { transition-delay: 0.4s; }
+#title.fixed { position: fixed; top: 20px; transform: none; transition: top 1.2s ease; }
+
+#text-block {
+    position: absolute;
+    top: 100%;
+    left: 400px;
+    width: 450px;
+    opacity: 0;
+    transition: top 1.2s ease, opacity 0.8s ease;
+    color: #2d7732;
+}
+
+#text-block p {
+    font-size: 16px;
+    line-height: 1.6;
+    margin-bottom: 1.2em;
+    text-align: justify;
+}
+
+/* ======================
+    CONTENT GRID SYSTEM
+====================== */
+#content {
+    margin-top: 110vh;
+    padding: 100px 18%;
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    grid-auto-rows: 80px;
+    gap: 32px;
+    justify-content: center;
+    background-image: url('image/noise.jpg');
+    background-repeat: no-repeat;
+    background-size: 100% auto;
+    background-position: top center;
+}
+.image {
+    width: 100%;
+    align-self: stretch;
+    position: relative;
+    overflow: visible;
+}
+.image img {
+    display: block;
+    transition: opacity 0.5s ease-in-out;
+}
+.image img.img-front {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.image img.img-back {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 20vw;
+    height: 20vw;
+    object-fit: contain;
+    opacity: 0;
+    z-index: 100;
+    pointer-events: none;
+}
+.image:hover img.img-front { opacity: 0; }
+.image:hover img.img-back { opacity: 1; }
+
+/* LAYOUT */
+.image:nth-child(1) { grid-column: 1 / span 4; grid-row: 3 / span 2; }
+.image:nth-child(2) { grid-column: 6 / span 6; grid-row: 7 / span 3; }
+.image:nth-child(3) { grid-column: 10 / span 4; grid-row: 1 / span 2; }
+.image:nth-child(4) { grid-column: 2 / span 4; grid-row: 13 / span 4; }
+.image:nth-child(5) { grid-column: 10 / span 3; grid-row: 12 / span 2; }
+.image:nth-child(6) { grid-column: 8 / span 9; grid-row: 17 / span 3; }
+.image:nth-child(7) { grid-column: 1 / span 3; grid-row: 21 / span 2; }
+.image:nth-child(8) { grid-column: 6 / span 4; grid-row: 23 / span 4; }
+.image:nth-child(9) { grid-column: 1 / span 6; grid-row: 30 / span 4; }
+.image:nth-child(10){ grid-column: 11 / span 5; grid-row: 28 / span 3; }
+.image:nth-child(11){ grid-column: 10 / span 3; grid-row: 34 / span 2; }
+.image:nth-child(12){ grid-column: 4 / span 4; grid-row: 37 / span 2; }
+
+/* ======================
+   TYPO NOISE (EFFETTO ZOOM DAL LATO)
+====================== */
+#typo-noise {
+    height: 320vh;
+    background: #f3fcf4;
+    position: relative;
+}
+
+#noise-wrapper {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow: hidden;
+}
+
+#noise-container {
+    position: absolute;
+    inset: 0;
+}
+
+.noise-char {
+    position: absolute;
+    font-size: 9pt;
+    line-height: 1;
+    white-space: nowrap;
+    color: #2d7732;
+    transform: translate(-50%, -50%);
+    will-change: font-size, opacity;
+    opacity: 0.35;
+    transition: font-size 0.12s linear, opacity 0.12s linear;
+}
+
+.noise-char.x {
+    font-weight: 600;
+}
+</style>
+</head>
+
+<body>
+
+<div id="title">
+    <span>Organismo</span>
+    <span>Tipografico</span>
+</div>
+
+<div id="text-block">
+    <p>Il nostro archivio interpreta il segno grafico attraverso la lente della biologia cellulare, elevando la lettera a unità minima e vitale del linguaggio. Come la cellula rappresenta il mattone fondamentale della vita, così ogni carattere racchiude in sé un codice morfologico che si evolve e si adatta nel tempo.</p>
+    <p>Attraverso questa analogia, l’archivio non si limita a catalogare forme, ma si costituisce come un vero e proprio organismo linguistico, dove la storia della tipografia viene riletta come un processo di sviluppo biologico e strutturale.</p>
+    <p>Adottando il rigore scientifico della biologia moderna, analizziamo l’evoluzione dei caratteri come una serie di mutazioni organiche.</p>
+</div>
+
+<div id="content">
+    <div class="image">
+        <img src="image/f4.png" class="img-front">
+        <img src="image/www2.png" class="img-back">
+    </div>
+    <div class="image">
+        <img src="image/f9.png" class="img-front">
+        <img src="image/www1.png" class="img-back">
+    </div>
+    <div class="image">
+        <img src="image/ff8.png" class="img-front">
+        <img src="image/www0.png" class="img-back">
+    </div>
+    <div class="image">
+        <img src="image/f6.png" class="img-front">
+        <img src="image/www9.png" class="img-back">
+    </div>
+    <div class="image">
+        <img src="image/f13.png" class="img-front">
+        <img src="image/www0.png" class="img-back">
+    </div>
+    <div class="image">
+        <img src="image/f18.png" class="img-front">
+        <img src="image/www6.png" class="img-back">
+    </div>
+    <div class="image">
+        <img src="image/f3.png" class="img-front">
+        <img src="image/www4.png" class="img-back">
+    </div>
+    <div class="image">
+        <img src="image/f12.png" class="img-front">
+        <img src="image/www5.png" class="img-back">
+    </div>
+    <div class="image">
+        <img src="image/ff2.png" class="img-front">
+        <img src="image/www0.png" class="img-back">
+    </div>
+    <div class="image">
+        <img src="image/f17.png" class="img-front">
+        <img src="image/www8.png" class="img-back">
+    </div>
+    <div class="image">
+        <img src="image/f7.png" class="img-front">
+        <img src="image/www7.png" class="img-back">
+    </div>
+    <div class="image">
+        <img src="image/ff1.png" class="img-front">
+        <img src="image/www0.png" class="img-back">
+    </div>
+</div>
+
+<section id="typo-noise">
+    <div id="noise-wrapper">
+        <div id="noise-container"></div>
+    </div>
+</section>
+
+<script>
+if ('scrollRestoration' in history) {
+  history.scrollRestoration = 'manual';
+}
+window.scrollTo(0, 0);
+
+const title = document.getElementById("title");
+const textBlock = document.getElementById("text-block");
+
+window.addEventListener('load', () => {
+    setTimeout(() => title.classList.add("visible"), 300);
+    setTimeout(() => {
+        title.classList.add("fixed");
+        textBlock.style.top = "50%";
+        textBlock.style.opacity = "1";
+    }, 1800);
+});
+
+title.addEventListener("click", () => {
+    textBlock.scrollIntoView({ behavior: "smooth", block: "center" });
+});
+
+/* ======================
+   TYPO NOISE (ZOOM DAL LATO VERSO CENTRO)
+====================== */
+document.addEventListener("DOMContentLoaded", () => {
+    const noiseContainer = document.getElementById("noise-container");
+    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    const NOISE_COUNT = 420;
+
+    for (let i = 0; i < NOISE_COUNT; i++) {
+        const span = document.createElement("span");
+        span.className = "noise-char";
+        span.textContent = chars[Math.floor(Math.random() * chars.length)];
+        span.dataset.x = (Math.random() * 100).toFixed(2);
+        span.dataset.y = (Math.random() * 100).toFixed(2);
+        span.style.left = span.dataset.x + "%";
+        span.style.top = span.dataset.y + "%";
+        noiseContainer.appendChild(span);
+    }
+
+    window.addEventListener("scroll", () => {
+        const section = document.getElementById("typo-noise");
+        const rect = section.getBoundingClientRect();
+        const progress = Math.min(Math.max(-rect.top / (rect.height - window.innerHeight), 0), 1);
+
+        const centerX = window.innerWidth / 2;
+        const centerY = window.innerHeight / 2;
+
+        // LATO DI PARTENZA (0 = sinistra, 100 = destra)
+        const startSide = 0;
+        const sideX = (startSide / 100) * window.innerWidth;
+
+        const minFont = 9;
+        const maxFont = 160;
+
+        // Avanzamento lineare della "linea di zoom"
+        const zoomLine = sideX + progress * (centerX - sideX);
+
+        const charsList = noiseContainer.querySelectorAll(".noise-char");
+
+        let closest = null;
+        let closestDist = Infinity;
+
+        charsList.forEach(char => {
+            const x = (parseFloat(char.dataset.x) / 100) * window.innerWidth;
+            const y = (parseFloat(char.dataset.y) / 100) * window.innerHeight;
+
+            const distFromLine = Math.abs(x - zoomLine);
+            const distToCenter = Math.hypot(x - centerX, y - centerY);
+
+            // distanza lineare: più vicino alla linea -> più grande
+            const lineInfluence = Math.max(0, 1 - distFromLine / 350);
+
+            // più ci si avvicina al centro, più si riduce l'influenza
+            const centerInfluence = Math.max(0, 1 - distToCenter / 900);
+
+            const influence = lineInfluence * centerInfluence;
+
+            const size = minFont + influence * (maxFont - minFont);
+            const opacity = 0.15 + influence * 0.85;
+
+            char.style.fontSize = size + "pt";
+            char.style.opacity = opacity;
+
+            if (distToCenter < closestDist) {
+                closestDist = distToCenter;
+                closest = char;
+            }
+        });
+
+        // FASE FINALE: SOLO UNA LETTERA
+        if (progress > 0.92) {
+            charsList.forEach(char => {
+                if (char !== closest) char.style.opacity = 0;
+            });
+            if (closest) {
+                closest.style.opacity = 1;
+                closest.style.fontSize = maxFont + "pt";
+            }
+        }
+    });
+});
+</script>
+
+</body>
+</html>

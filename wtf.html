@@ -17,7 +17,6 @@
             font-style: normal;
         }
 
-        /* 颜色变量定义 */
         :root {
             --primary-green: #2D7732;
             --bg-light: #F3FCF4;
@@ -31,18 +30,8 @@
             margin: 0;
         }
 
-        /* 自定义边框颜色 */
         .custom-border {
             border: 1px solid rgba(45, 119, 50, 0.3);
-        }
-
-        .custom-scrollbar::-webkit-scrollbar {
-            width: 2px;
-        }
-
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-            background: var(--primary-green);
-            opacity: 0.2;
         }
 
         .canvas {
@@ -62,28 +51,56 @@
         }
 
         #center-x {
-            font-size: 200vh;
+            font-size: 250vh;
             color: var(--primary-green);
-            z-index: 5;
+            z-index: 1;
             line-height: 1;
             user-select: none;
             font-family: 'Cell-2901', sans-serif;
-            opacity: 0.95;
+            pointer-events: none;
         }
 
-        input {
+        input,
+        textarea {
             font-family: 'Cell-2901', sans-serif;
             color: var(--primary-green);
         }
 
-        input::placeholder {
-            color: var(--primary-green);
-            opacity: 0.3;
+        #char-grid span {
+            aspect-ratio: 1;
+            border-right: 1px solid rgba(45, 119, 50, 0.1);
+            border-bottom: 1px solid rgba(45, 119, 50, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 1.2rem;
         }
 
-        /* 底部装饰线 */
-        .footer-line {
-            border-top: 1px solid var(--primary-green);
+        #char-grid span:hover {
+            background: var(--primary-green);
+            color: var(--bg-light);
+        }
+
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 2px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: var(--primary-green);
+        }
+
+        /* 让 Section 1 的文本两端对齐，更有学术排版的感觉 */
+        #section-1 .text-justify {
+            text-align: left;
+            text-justify: inter-word;
+        }
+
+
+        /* 给方框加一个极细的内阴影，增加层次感 */
+        .custom-border {
+            border: 1px solid rgba(45, 119, 50);
         }
     </style>
 </head>
@@ -93,154 +110,198 @@
     <div id="main-wrapper">
         <div class="canvas" id="vibe-canvas">
 
-            <div id="center-x" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none text-center">
+            <div id="center-x" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 ">
                 x
             </div>
 
-            <section id="section-1" class="overflow-y-auto custom-scrollbar">
-                <div class="max-w-[70vw] grid grid-cols-1 gap-4 pr-4">
-                    <h2 class="text-[10px] uppercase tracking-[0.3em] mb-2 opacity-60 font-sans">01 / Biological Specimen</h2>
+            <section id="section-1" class="h-screen w-screen grid grid-cols-3 grid-rows-9 gap-4 px-20 pt-8 pb-4">
+                <div class="col-span-3 h-12 flex items-end">
+                    <h2 class="text-[28px] uppercase">Cell Font</h2>
+                </div>
 
-                    <div class="custom-border p-6">
-                        <p class="text-6xl leading-none">Eukaryotic</p>
+                <div class="col-start-1 row-start-2 row-span-8 flex flex-col gap-4 min-h-0">
+                    <div class="custom-border p-4 flex-grow-[3] overflow-hidden">
+                        <p class="text-[18px] leading-tight text-justify">
+                            The eukaryotic cell is a complex system of organelles working in concert. Unlike prokaryotic
+                            cells, they possess a clearly defined nucleus housing genetic material. This intricate
+                            architecture allows for the specialization of functions.
+                        </p>
                     </div>
-
-                    <div class="custom-border p-6">
-                        <p class="text-3xl leading-tight">Cells are the basic structural and functional units of all known living organisms.</p>
+                    <div class="custom-border p-4 flex-grow-[1] flex items-center">
+                        <p class="text-[28px] leading-none tracking-tighter uppercase break-all font-bold">
+                            copyyou.text.copyyou.text</p>
                     </div>
-
-                    <div class="custom-border p-5">
-                        <p class="text-base leading-relaxed">The study of cells is called cell biology. Cells consist of cytoplasm enclosed within a membrane, which contains many biomolecules such as proteins and nucleic acids.</p>
+                    <div class="custom-border p-3 flex-grow-[1.5] grid grid-cols-2 gap-3 overflow-hidden">
+                        <p class="text-[7px] leading-[1.1] opacity-80 uppercase text-justify">Microscopic observation
+                            reveals a world of dynamic membranes and lipid bilayers. Every cell is a testament to
+                            evolution.</p>
+                        <p class="text-[7px] leading-[1.1] opacity-80 uppercase text-justify">The study of life at its
+                            most fundamental level. Analysis of structure, function, and chemistry of units.</p>
                     </div>
+                </div>
 
-                    <div class="custom-border p-4">
-                        <p class="text-[10px] leading-normal opacity-70 uppercase tracking-wider">Most plant and animal cells are visible only under a light microscope, with dimensions between 1 and 100 micrometres.</p>
+                <div class="col-start-2 row-start-2 custom-border p-6 row-span-4">
+                    <p class="text-[16px] leading-relaxed">
+                        Cellular systems are structured through hierarchical organization, where molecular components
+                        interact to maintain stability.
+                    </p>
+                </div>
+
+                <div class="col-start-2 custom-border p-6 row-span-4">
+                    <p class="text-[36px] leading-tight break-all">
+                        cell.cellular.structure.organization.boundary.replication.
+                        cell.cellular.structure.organization.boundary.
+                    </p>
+                </div>
+
+                <div class="col-start-3 row-start-2 custom-border p-6 row-span-2">
+                    <p class="text-[24px] leading-snug">
+                        The repetition of cellular units generates complex organisms.
+                    </p>
+                </div>
+            </section>
+
+            <section id="section-2"
+                class="h-screen w-screen grid grid-cols-3 grid-rows-9 gap-4 px-20 pt-8 pb-4 overflow-hidden border-none">
+
+                <div class="col-span-3 h-12 flex items-end">
+                    <h2 class="text-[28px] uppercase">Font Textin</h2>
+                </div>
+
+                <div class="col-start-1 row-start-4 flex flex-col gap-2">
+                    <span class="text-[10px] uppercase tracking-[0.3em] opacity-60">Alignment</span>
+                    <div class="flex gap-2">
+                        <div
+                            class="w-10 h-8 border border-[#2D7732] bg-white/5 flex items-center justify-center text-[10px] italic text-[#2D7732]">
+                            A</div>
+                        <div
+                            class="w-10 h-8 border border-[#2D7732] bg-white/5 flex items-center justify-center text-[10px] italic text-[#2D7732]">
+                            B</div>
+                        <div
+                            class="w-10 h-8 border border-[#2D7732] bg-white/5 flex items-center justify-center text-[10px] italic text-[#2D7732]">
+                            C</div>
+                    </div>
+                </div>
+
+                <div class="col-start-2 col-span-2 row-start-2 row-span-8 custom-border p-12 bg-white/5 flex flex-col">
+                    <textarea id="editableText" spellcheck="false"
+                        class="w-full h-full bg-transparent border-none outline-none resize-none text-[80px] uppercase leading-[1.1] placeholder:opacity-20 custom-scrollbar"
+                        placeholder="(type the text here)">Human body has approximately 37.8 cells</textarea>
+                </div>
+
+                <div
+                    class="col-start-1 row-start-2 row-span-2 custom-border p-6 bg-white/5 flex flex-col justify-center gap-6 z-10">
+                    <div class="flex flex-col gap-2">
+                        <div class="flex justify-between text-[10px] uppercase tracking-widest opacity-70">
+                            <span>size:</span>
+                            <span id="sizeVal">80px</span>
+                        </div>
+                        <input type="range" id="sizeSlider" min="20" max="240" value="80"
+                            class="w-full h-[1px] bg-[#2D7732]/40 appearance-none cursor-pointer accent-[#2D7732]">
+                    </div>
+                    <div class="flex flex-col gap-2">
+                        <div class="flex justify-between text-[10px] uppercase tracking-widest opacity-70">
+                            <span>lineheight:</span>
+                            <span id="lhVal">1.2</span>
+                        </div>
+                        <input type="range" id="lhSlider" min="0.5" max="3" step="0.1" value="1.2"
+                            class="w-full h-[1px] bg-[#2D7732]/40 appearance-none cursor-pointer accent-[#2D7732]">
                     </div>
                 </div>
             </section>
 
-<section id="section-2" class="flex p-12 gap-8 bg-white/5 overflow-hidden">
-    
-    <div class="flex-1 flex flex-col custom-border p-8 h-full">
-        <div class="flex justify-between items-center mb-6 opacity-60">
-            <span class="text-[10px] uppercase tracking-widest">Type-in Canvas</span>
-            <span class="text-[10px] uppercase tracking-widest" id="stats-display">37.2 Trillion Cells</span>
-        </div>
-        <textarea id="editableText" spellcheck="false" 
-            class="flex-1 w-full bg-transparent border-none outline-none resize-none overflow-auto custom-scrollbar uppercase leading-[1.2] text-[80px]"
-            style="color: var(--primary-green); font-family: 'Cell-2901';">
-The human body is composed of approximately 37.2 trillion cells.
-            </textarea>
-    </div>
-
-    <div class="w-80 flex flex-col gap-4">
-        
-        <div class="custom-border p-6">
-            <div class="text-[10px] uppercase tracking-widest mb-4 opacity-60">Alignment</div>
-            <div class="flex border border-[#2D7732]">
-                <button class="flex-1 h-12 flex items-center justify-center border-r border-[#2D7732] hover:bg-[#2D7732]/10 transition-colors" onclick="setTextAlign('left', this)">
-                    <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M4 5h12v2H4z M4 9h16v2H4z M4 13h12v2H4z M4 17h16v2H4z" /></svg>
-                </button>
-                <button class="flex-1 h-12 flex items-center justify-center border-r border-[#2D7732] hover:bg-[#2D7732]/10 transition-colors" onclick="setTextAlign('center', this)">
-                    <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M6 5h12v2H6z M4 9h16v2H4z M6 13h12v2H6z M4 17h16v2H4z" /></svg>
-                </button>
-                <button class="flex-1 h-12 flex items-center justify-center hover:bg-[#2D7732]/10 transition-colors" onclick="setTextAlign('right', this)">
-                    <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M8 5h12v2H8z M4 9h16v2H4z M8 13h12v2H8z M4 17h16v2H4z" /></svg>
-                </button>
-            </div>
-        </div>
-
-        <div class="custom-border p-6">
-            <div class="flex justify-between text-[10px] uppercase tracking-widest mb-4">
-                <span class="opacity-60">Size</span>
-                <span id="sizeVal">80px</span>
-            </div>
-            <input type="range" id="sizeSlider" min="20" max="200" value="80" 
-                class="w-full h-[1px] bg-[#2D7732] appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:bg-[#2D7732]">
-        </div>
-
-        <div class="custom-border p-6">
-            <div class="flex justify-between text-[10px] uppercase tracking-widest mb-4">
-                <span class="opacity-60">Line Height</span>
-                <span id="lhVal">1.2</span>
-            </div>
-            <input type="range" id="lhSlider" min="0.5" max="3" step="0.1" value="1.2" 
-                class="w-full h-[1px] bg-[#2D7732] appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:bg-[#2D7732]">
-        </div>
-
-        <div class="flex-1 custom-border p-6 flex items-end">
-            <p class="text-[10px] opacity-40 leading-tight italic">
-                * Adjust parameters to observe cellular morphing in various contexts.
-            </p>
-        </div>
-    </div>
-</section>
-
-            <section id="section-4" class="flex flex-col justify-between">
-                <div>
-                    <h2 class="text-xs uppercase tracking-widest mb-8 opacity-60 font-sans">04 / Character Map</h2>
-                    <div class="grid grid-cols-8 gap-4 text-3xl" id="char-grid"></div>
+            <section id="section-4" class="h-screen w-screen grid grid-cols-3 grid-rows-9 gap-4 px-20 pt-8 pb-4">
+                <div class="col-span-3 h-12 flex items-end">
+                    <h2 class="text-[28px] uppercase">Character Set</h2>
                 </div>
-                <div class="mt-20 footer-line pt-4 flex justify-between items-end font-sans text-sm">
-                    <div class="text-3xl font-bold uppercase leading-tight">Communication<br>Design '26</div>
-                    <div class="text-right opacity-80">Politecnico di Milano<br>Your Name</div>
-                </div>
-            </section>
 
-            <section id="section-3" class="flex items-center justify-center">
-                <div class="text-center">
-                    <h2 class="text-xs uppercase tracking-widest mb-8 opacity-60 font-sans">03 / Details</h2>
-                    <div class="flex gap-10">
-                        <div class="w-48 h-48 rounded-full custom-border flex items-center justify-center text-7xl hover:bg-[#2D7732] hover:text-[#F3FCF4] transition-all cursor-crosshair">a</div>
-                        <div class="w-48 h-48 rounded-full custom-border flex items-center justify-center text-7xl hover:bg-[#2D7732] hover:text-[#F3FCF4] transition-all cursor-crosshair">g</div>
+                <div class="col-start-1 col-span-3 row-start-2 row-span-8 flex items-stretch min-h-0">
+
+                    <div class="flex-[2] h-full flex flex-col min-h-0">
+                        <div class="flex-1 overflow-y-auto custom-scrollbar border border-[#2D7732]/20 bg-white/5">
+                            <div id="char-grid" class="grid grid-cols-8 md:grid-cols-10 lg:grid-cols-12">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex-1 ml-8 flex flex-col justify-between items-start">
+
+                        <div class="flex flex-col items-start w-full">
+                            <h2 class="text-[10px] uppercase tracking-[0.3em] mb-4 opacity-60 font-sans font-bold">
+                                Preview</h2>
+                            <div
+                                class="w-32 aspect-square border border-[#2D7732] flex items-center justify-center bg-white/5 shadow-sm">
+                                <span id="focus-char" class="text-7xl leading-none text-[#2D7732]">a</span>
+                            </div>
+                        </div>
+
+                        <div class="text-left text-[14px] leading-tight  tracking-wide space-y-1  uppercase pb-0">
+                            <p class="text-[#2D7732]">Cell-2901 Specimen</p>
+                            <p>Milan, Politecnico di Milano</p>
+                            <p>A.Y. 2024-2025</p>
+                        </div>
                     </div>
                 </div>
             </section>
 
+            <section id="section-3"
+                class="h-screen w-screen grid grid-cols-3 grid-rows-9 gap-4 px-20 pt-0 pb-4 border-none">
+
+                <div class="col-start-2 col-span-2 row-start-2 row-span-8 flex items-center justify-center">
+                    <div class="grid grid-cols-4 gap-x-12 gap-y-10">
+                        <div
+                            class="w-40 h-40 rounded-full custom-border flex items-center justify-center text-7xl hover:bg-[#2D7732] hover:text-[#F3FCF4] transition-all cursor-crosshair">
+                            e</div>
+                        <div
+                            class="w-40 h-40 rounded-full custom-border flex items-center justify-center text-7xl hover:bg-[#2D7732] hover:text-[#F3FCF4] transition-all cursor-crosshair">
+                            l</div>
+                        <div
+                            class="w-40 h-40 rounded-full custom-border flex items-center justify-center text-7xl hover:bg-[#2D7732] hover:text-[#F3FCF4] transition-all cursor-crosshair">
+                            c</div>
+                        <div
+                            class="w-40 h-40 rounded-full custom-border flex items-center justify-center text-7xl hover:bg-[#2D7732] hover:text-[#F3FCF4] transition-all cursor-crosshair">
+                            o</div>
+
+                        <div
+                            class="w-40 h-40 rounded-full custom-border flex items-center justify-center text-7xl hover:bg-[#2D7732] hover:text-[#F3FCF4] transition-all cursor-crosshair">
+                            m</div>
+                        <div
+                            class="w-40 h-40 rounded-full custom-border flex items-center justify-center text-7xl hover:bg-[#2D7732] hover:text-[#F3FCF4] transition-all cursor-crosshair">
+                            u</div>
+                        <div
+                            class="w-40 h-40 rounded-full custom-border flex items-center justify-center text-7xl hover:bg-[#2D7732] hover:text-[#F3FCF4] transition-all cursor-crosshair">
+                            x</div>
+                        <div
+                            class="w-40 h-40 rounded-full custom-border flex items-center justify-center text-7xl hover:bg-[#2D7732] hover:text-[#F3FCF4] transition-all cursor-crosshair">
+                            i</div>
+
+                        <div
+                            class="w-40 h-40 rounded-full custom-border flex items-center justify-center text-7xl hover:bg-[#2D7732] hover:text-[#F3FCF4] transition-all cursor-crosshair">
+                            a</div>
+                        <div
+                            class="w-40 h-40 rounded-full custom-border flex items-center justify-center text-7xl hover:bg-[#2D7732] hover:text-[#F3FCF4] transition-all cursor-crosshair">
+                            b</div>
+                        <div
+                            class="w-40 h-40 rounded-full custom-border flex items-center justify-center text-7xl hover:bg-[#2D7732] hover:text-[#F3FCF4] transition-all cursor-crosshair">
+                            s</div>
+                        <div
+                            class="w-40 h-40 rounded-full custom-border flex items-center justify-center text-7xl hover:bg-[#2D7732] hover:text-[#F3FCF4] transition-all cursor-crosshair">
+                            t</div>
+                    </div>
+                </div>
+            </section>
         </div>
     </div>
 
     <script>
-
-        // 实验室交互逻辑
-const editableText = document.getElementById('editableText');
-const sizeSlider = document.getElementById('sizeSlider');
-const sizeVal = document.getElementById('sizeVal');
-const lhSlider = document.getElementById('lhSlider');
-const lhVal = document.getElementById('lhVal');
-
-// 字体大小调节
-sizeSlider.addEventListener('input', () => {
-    editableText.style.fontSize = sizeSlider.value + 'px';
-    sizeVal.textContent = sizeSlider.value + 'px';
-});
-
-// 行高调节
-lhSlider.addEventListener('input', () => {
-    editableText.style.lineHeight = lhSlider.value;
-    lhVal.textContent = lhSlider.value;
-});
-
-// 对齐方式函数
-function setTextAlign(align, btn) {
-    editableText.style.textAlign = align;
-    // 简单的视觉反馈逻辑可以写在这里
-}
-
-// 保持中心 X 与编辑框内容同步 (如果你还想要这个功能)
-editableText.addEventListener('input', (e) => {
-    const val = e.target.value;
-    if (centerX) {
-        centerX.innerText = val.length > 0 ? val[val.length - 1] : "X";
-    }
-});
         gsap.registerPlugin(ScrollTrigger);
 
         const canvas = document.getElementById('vibe-canvas');
         const centerX = document.getElementById('center-x');
-        const input = document.getElementById('user-input');
+        const focusChar = document.getElementById('focus-char');
+        const editableText = document.getElementById('editableText');
 
-        // 镜头路径动画
+        // 1. 镜头滚动逻辑
         gsap.to(canvas, {
             scrollTrigger: {
                 trigger: "#main-wrapper",
@@ -258,20 +319,46 @@ editableText.addEventListener('input', (e) => {
             ease: "power2.inOut"
         });
 
-        // 打字同步逻辑
-        input.addEventListener('input', (e) => {
-            const val = e.target.value;
-            centerX.innerText = val.length > 0 ? val[val.length - 1] : "X";
+        // 2. 实验室逻辑
+        const sizeSlider = document.getElementById('sizeSlider');
+        const lhSlider = document.getElementById('lhSlider');
+
+        sizeSlider.addEventListener('input', () => {
+            editableText.style.fontSize = sizeSlider.value + 'px';
+            document.getElementById('sizeVal').textContent = sizeSlider.value + 'px';
+        });
+        lhSlider.addEventListener('input', () => {
+            editableText.style.lineHeight = lhSlider.value;
+            document.getElementById('lhVal').textContent = lhSlider.value;
         });
 
-        // 字符集生成
+        // 3. 精确字符集填充
+        const glyphSets = {
+            maiuscola: "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split(""),
+            minuscola: "abcdefghijklmnopqrstuvwxyz".split(""),
+            accenti: [..."ÀÁÈÉÌÍÒÓÙÚÝàáèéìíòóùúý"],
+            numeri: "0123456789".split(""),
+            glifi: [..."!&'()*.·,/.:;?¿¡@#[]{}", ..."«»", ..."\\", ..."-%‰…—_`^+<=>|~≈", ..."\"“”’", ..." $£¥€"]
+        };
+        const allChars = [...glyphSets.maiuscola, ...glyphSets.minuscola, ...glyphSets.accenti, ...glyphSets.numeri, ...glyphSets.glifi];
         const charGrid = document.getElementById('char-grid');
-        "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("").forEach(char => {
+
+        allChars.forEach(char => {
             const span = document.createElement('span');
             span.innerText = char;
-            span.className = "cursor-pointer hover:opacity-30 transition-opacity";
-            span.onclick = () => { centerX.innerText = char; };
+            span.onclick = () => {
+                // 只改变右侧的小方块，中间的 X 保持不变
+                focusChar.innerText = char;
+                gsap.fromTo(focusChar, { scale: 0.8, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.3 });
+            };
             charGrid.appendChild(span);
+        });
+
+        // 输入框监听同步
+        editableText.addEventListener('input', (e) => {
+            const val = e.target.value;
+            // 如果你希望输入时大 X 也变，取消下一行的注释
+            // centerX.innerText = val.length > 0 ? val[val.length - 1] : "x";
         });
     </script>
 </body>

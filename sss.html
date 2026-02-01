@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+    <meta charset="UTF-8">
+    <title>G15Font — Kinetic Exploding Sphere</title>
+    <style>
+        @font-face {
+            font-family: 'CellFont';
+            src: url('Cell-2901.ttf') format('truetype');
+        }
+
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 200vh; /* 需要高度来产生滚动数值 */
+            background: #f3fcf4;
+            font-family: 'CellFont', sans-serif;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        canvas {
+            position: fixed;
+            inset: 0;
+            z-index: 1;
+            cursor: grab;
+            background: #f3fcf4;
+        }
+
+        canvas:active { cursor: grabbing; }
+    </style>
+</head>
+
+<body>
+    <canvas id="canvas"></canvas>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const letters = "qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM".split("");
+        const points = [];
+        const radius = 240;
+        const perspective = 1000;
+
+        let rotX = 0, rotY = 0;
+        let isDragging = false;
+        let lastMouseX = 0, lastMouseY = 0;
+
+        letters.forEach((char, i) => {
+            const phi = Math.acos(1 - 2 * (i + 0.5) / letters.length);
+            const theta = Math.PI * (1 + Math.sqrt(5)) * i;
+
+            const sx = radius * Math.sin(phi) * Math.cos(theta);
+            const sy = radius * Math.sin(phi) * Math.sin(theta);
+            const sz = radius * Math.cos(phi);
+
+            points.push({
+                char,
+                x: sx, y: sy, z: sz,
+                sx: sx, sy: sy, sz: sz,
+                scatterX: (Math.random() - 0.5) * 2000,
+                scatterY: (Math.random() - 0.5) * 2000,
+                scatterZ: (Math.random() - 0.5) * 1500,
+                projX: 0, projY: 0,
+                isHero: false,
+                heroProgress: 0
+            });
+        });
+
+        canvas.addEventListener('mousedown', e => {
+            isDragging = true;
+            lastMouseX = e.clientX;
+            lastMouseY = e.clientY;
+        });
+
+        window.addEventListener('mousemove', e => {
+            if (isDragging) {
+                rotY += (e.clientX - lastMouseX) * 0.005;
+                rotX += (e.clientY - lastMouseY) * 0.005;
+                lastMouseX = e.clientX;
+                lastMouseY = e.clientY;
+            }
+            if (!isDragging) {
+                let hovering = points.some(p => Math.hypot(e.clientX - p.projX, e.clientY - p.projY) < 25);
+                canvas.style.cursor = hovering ? 'pointer' : 'grab';
+            }
+        });
+
+        window.addEventListener('mouseup', () => isDragging = false);
+
+        canvas.addEventListener('click', (e) => {
+            if (Math.abs(lastMouseX - e.clientX) > 5) return;
+            let closest = null, minD = 35;
+            points.forEach(p => {
+                const d = Math.hypot(e.clientX - p.projX, e.clientY - p.projY);
+                if (d < minD) { minD = d; closest = p; }
+            });
+            if (closest) {
+                points.forEach(p => p.isHero = false);
+                closest.isHero = true;
+            }
+        });
+
+        function rotatePoint(p, ax, ay) {
+            let y1 = p.y * Math.cos(ax) - p.z * Math.sin(ax);
+            let z1 = p.y * Math.sin(ax) + p.z * Math.cos(ax);
+            let x2 = p.x * Math.cos(ay) + z1 * Math.sin(ay);
+            let z2 = -p.x * Math.sin(ay) + z1 * Math.cos(ay);
+            return { x: x2, y: y1, z: z2 };
+        }
+
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            let scatterProgress = Math.min(window.scrollY / 800, 1);
+            
+            if (!isDragging) {
+                rotY += 0.001;
+                rotX += 0.0005;
+            }
+
+            points.forEach((p) => {
+                p.heroProgress += (p.isHero ? 1 - p.heroProgress : 0 - p.heroProgress) * 0.08;
+
+                const destX = p.sx + p.scatterX * scatterProgress;
+                const destY = p.sy + p.scatterY * scatterProgress;
+                const destZ = p.sz + p.scatterZ * scatterProgress;
+
+                p.x += (destX - p.x) * 0.1;
+                p.y += (destY - p.y) * 0.1;
+                p.z += (destZ - p.z) * 0.1;
+
+                const rotated = rotatePoint(p, rotX, rotY);
+                const scale = perspective / (perspective + rotated.z);
+                
+                let px = rotated.x * scale + canvas.width / 2;
+                let py = rotated.y * scale + canvas.height / 2;
+                let pSize = scale * 22;
+
+                const targetX = canvas.width * 0.8; 
+                const targetY = canvas.height * 0.5;
+                const targetSize = canvas.height * 0.5;
+
+                const finalX = px + (targetX - px) * p.heroProgress;
+                const finalY = py + (targetY - py) * p.heroProgress;
+                const finalSize = pSize + (targetSize - pSize) * p.heroProgress;
+
+                p.projX = px;
+                p.projY = py;
+
+                const alpha = Math.max(0.1, 1 - (rotated.z + radius) / (radius * 4));
+                
+                // 设置字体，统一使用 CellFont
+                ctx.font = `${finalSize}px CellFont`; 
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                
+                // 这里修改了颜色：#2d7732 对应的 RGB 为 (45, 119, 50)
+                const baseAlpha = p.isHero ? 1 : alpha * (1 - scatterProgress * 0.7);
+                ctx.fillStyle = `rgba(45, 119, 50, ${baseAlpha})`;
+                
+                ctx.fillText(p.char, finalX, finalY);
+            });
+
+            requestAnimationFrame(draw);
+        }
+
+        draw();
+
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<title>G15Font — Spatial Specimen</title>
+
+<style>
+@font-face {
+    font-family: 'G15Font';
+    src: url('G15_Font.ttf') format('truetype');
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 300vh;
+    background: white;
+    font-family: 'G15Font', sans-serif;
+    overflow-x: hidden;
+}
+
+canvas {
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+}
+
+/* box in basso a sinistra (diventa slider ma resta in basso) */
+.preview-box {
+    position: fixed;
+    left: 20px;
+    bottom: 20px;
+    width: 140px;
+    height: 140px;
+    border: 2px solid #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 64px;
+    background: #fff;
+    pointer-events: none;
+    transition: all 0.6s ease;
+    z-index: 10;
+}
+
+/* quando scrolli, diventa slider ma resta in basso */
+.preview-box.expanded {
+    width: 100vw;
+    height: 60px;
+    left: 0;
+    bottom: 0;
+    border: none;
+    background: transparent;
+    font-size: 0;
+    pointer-events: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* slider */
+#sizeSlider {
+    width: 100%;
+    margin-right: 20px;
+}
+
+#sliderValue {
+    width: 80px;
+    text-align: center;
+    font-size: 16px;
+    color: #000;
+    font-family: 'G15Font', sans-serif;
+}
+
+/* testo a metà schermo */
+.content {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 60ch;          /* circa 60 caratteri per riga */
+    max-width: 80vw;
+    padding: 20px;
+    font-size: 20px;
+    line-height: 1.6;
+    opacity: 0;
+    transition: opacity 0.6s ease;
+    z-index: 5;
+    pointer-events: none;
+}
+.content.visible {
+    opacity: 1;
+    pointer-events: auto;
+}
+</style>
+</head>
+
+<body>
+
+<canvas id="canvas"></canvas>
+
+<div class="preview-box" id="previewBox">
+    <span id="previewChar">—</span>
+
+    <!-- SLIDER + VALORE -->
+    <input type="range" id="sizeSlider" min="12" max="72" value="20" style="display:none;">
+    <div id="sliderValue" style="display:none;">20</div>
+</div>
+
+<div class="content" id="contentText">
+    <p>Il nostro archivio interpreta il segno grafico attraverso la lente della biologia cellulare, elevando la lettera a unità minima e vitale del linguaggio. Come la cellula rappresenta il mattone fondamentale della vita, così ogni carattere racchiude in sé un codice morfologico che si evolve e si adatta nel tempo.</p>
+    <p>Attraverso questa analogia, l’archivio non si limita a catalogare forme, ma si costituisce come un vero e proprio organismo linguistico, dove la storia della tipografia viene riletta come un processo di sviluppo biologico e strutturale.</p>
+    <p>Adottando il rigore scientifico della biologia moderna, analizziamo l’evoluzione dei caratteri come una serie di mutazioni organiche. Il nostro approccio seziona l’anatomia dei glifi per rivelarne la vitalità intrinseca e le trasformazioni storiche, trattando ogni segno come un’entità soggetta a leggi di crescita e differenziazione. In questo spazio di ricerca, la morfologia cellulare e il design dei caratteri convergono, trasformando la raccolta documentale in una testimonianza dinamica della vitalità del segno.</p>
+</div>
+
+<script>
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+const previewBox = document.getElementById('previewBox');
+const previewChar = document.getElementById('previewChar');
+const sizeSlider = document.getElementById('sizeSlider');
+const sliderValue = document.getElementById('sliderValue');
+const contentText = document.getElementById('contentText');
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+const letters = "qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM".split("");
+const points = [];
+const spherePoints = [];
+const radius = 380;
+const perspective = 900;
+
+let mouseY = 0;
+let rotX = 0;
+let rotY = 0;
+
+letters.forEach((char, i) => {
+    points.push({
+        char,
+        x: Math.random() * canvas.width * 2 - canvas.width * 0.5,
+        y: Math.random() * canvas.height * 2 - canvas.height * 0.5,
+        z: Math.random() * 1000 - 500
+    });
+
+    const phi = Math.acos(1 - 2 * (i + 0.5) / letters.length);
+    const theta = Math.PI * (1 + Math.sqrt(5)) * i;
+
+    spherePoints.push({
+        x: radius * Math.sin(phi) * Math.cos(theta),
+        y: radius * Math.sin(phi) * Math.sin(theta),
+        z: radius * Math.cos(phi)
+    });
+});
+
+document.addEventListener('mousemove', e => {
+    mouseY = (e.clientY / canvas.height - 0.5) * 2;
+});
+
+function rotatePoint(p, ax, ay) {
+    let y1 = p.y * Math.cos(ax) - p.z * Math.sin(ax);
+    let z1 = p.y * Math.sin(ax) + p.z * Math.cos(ax);
+    let x2 = p.x * Math.cos(ay) + z1 * Math.sin(ay);
+    let z2 = -p.x * Math.sin(ay) + z1 * Math.cos(ay);
+    return {x: x2, y: y1, z: z2};
+}
+
+function project(p) {
+    const scale = perspective / (perspective + p.z);
+    return {
+        x: p.x * scale + canvas.width / 2,
+        y: p.y * scale + canvas.height / 2,
+        size: scale * 38
+    };
+}
+
+function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    const scrollProgress = Math.min(window.scrollY / (canvas.height), 1);
+
+    rotX += 0.002;
+    rotY += 0.003;
+
+    points.forEach((p, i) => {
+        const target = spherePoints[i];
+
+        p.x += (target.x - p.x) * scrollProgress * 0.04;
+        p.y += (target.y - p.y) * scrollProgress * 0.04;
+        p.z += (target.z - p.z) * scrollProgress * 0.04;
+
+        let rotated = rotatePoint(p, rotX + mouseY * 0.3, rotY);
+        const proj = project(rotated);
+
+        ctx.font = `${proj.size}px G15Font`;
+        ctx.fillStyle = '#000';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(p.char, proj.x, proj.y);
+
+        p.screen = { x: proj.x, y: proj.y, size: proj.size };
+    });
+
+    requestAnimationFrame(draw);
+}
+
+draw();
+
+canvas.addEventListener('click', (e) => {
+    const mx = e.clientX;
+    const my = e.clientY;
+
+    let closest = null;
+    let minDist = Infinity;
+
+    points.forEach(p => {
+        const dx = p.screen.x - mx;
+        const dy = p.screen.y - my;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+
+        if (dist < minDist && dist < p.screen.size * 0.6) {
+            minDist = dist;
+            closest = p;
+        }
+    });
+
+    if (closest) {
+        previewChar.textContent = closest.char;
+    }
+});
+
+window.addEventListener('resize', () => {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+});
+
+/* -------- RESET SCROLL AL REFRESH -------- */
+window.onbeforeunload = function () {
+    window.scrollTo(0, 0);
+};
+
+/* -------- SCROLL + SLIDER + TESTO -------- */
+window.addEventListener('scroll', () => {
+    const scroll = window.scrollY;
+
+    // qui imposti "molto scroll"
+    const showThreshold = canvas.height * 1.5;  // <-- aumenta se vuoi ancora più scroll
+
+    if (scroll > showThreshold) {
+        // appare testo + slider insieme
+        contentText.classList.add('visible');
+        previewBox.classList.add('expanded');
+        sizeSlider.style.display = 'block';
+        sliderValue.style.display = 'block';
+        previewChar.style.display = 'none';
+
+        // sfera scompare
+        canvas.style.display = 'none';
+    } else {
+        // torna indietro
+        contentText.classList.remove('visible');
+        previewBox.classList.remove('expanded');
+        sizeSlider.style.display = 'none';
+        sliderValue.style.display = 'none';
+        previewChar.style.display = 'block';
+
+        canvas.style.display = 'block';
+    }
+});
+
+sizeSlider.addEventListener('input', () => {
+    contentText.style.fontSize = sizeSlider.value + 'px';
+    sliderValue.textContent = sizeSlider.value;
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<title>G15Font — Spatial Specimen</title>
+
+<style>
+@font-face {
+    font-family: 'G15Font';
+    src: url('G15_Font.ttf') format('truetype');
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 300vh;
+    background: white;
+    font-family: 'G15Font', sans-serif;
+    overflow-x: hidden;
+}
+
+canvas {
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+}
+
+/* ===== PREVIEW / SLIDER ===== */
+.preview-box {
+    position: fixed;
+    left: 20px;
+    bottom: 20px;
+    width: 140px;
+    height: 140px;
+    border: 2px solid #000;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 64px;
+    transition: all 0.6s ease;
+    z-index: 10;
+    pointer-events: none;
+}
+
+.preview-box.expanded {
+    width: 260px;
+    height: 60px;
+    font-size: 0;
+    pointer-events: auto;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+#sizeSlider {
+    width: 100%;
+    display: none;
+}
+
+#sliderValue {
+    font-size: 12px;
+    text-align: center;
+    display: none;
+}
+
+/* ===== SECONDA PAGINA ===== */
+.blocks {
+    position: fixed;
+    inset: 0;
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.6s ease;
+    z-index: 5;
+}
+
+.blocks.visible {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.block {
+    border: 1px solid #000;
+    padding: 24px;
+    line-height: 1.6;
+    overflow: auto;
+}
+
+/* ===== BLOCCO VARIABILE ===== */
+.variable {
+    grid-row: 1 / span 2;
+}
+
+/* textarea type-in */
+.variable textarea {
+    width: 100%;
+    height: 100%;
+    resize: none;
+    border: none;
+    outline: none;
+    font-family: 'G15Font', sans-serif;
+    font-size: 20px;
+    line-height: 1.6;
+    background: transparent;
+}
+
+/* ===== BLOCCHI FISSI ===== */
+.f10 { font-size: 10px; }
+.f12 { font-size: 12px; }
+.f16 { font-size: 16px; }
+.f24 { font-size: 24px; }
+</style>
+</head>
+
+<body>
+
+<canvas id="canvas"></canvas>
+
+<!-- PREVIEW / SLIDER -->
+<div class="preview-box" id="previewBox">
+    <span id="previewChar">—</span>
+    <input type="range" id="sizeSlider" min="12" max="72" value="20">
+    <div id="sliderValue">20px</div>
+</div>
+
+<!-- SECONDA PAGINA -->
+<div class="blocks" id="blocks">
+
+    <!-- BLOCCO TYPE-IN VARIABILE -->
+    <div class="block variable">
+        <textarea id="variableText">
+Questo è uno spazio di scrittura.
+Il testo può essere modificato liberamente.
+
+La variazione dimensionale consente
+di osservare come il carattere reagisce
+al cambio di scala, alterando peso,
+ritmo e percezione formale.
+
+Scrivere è parte dell’analisi.
+        </textarea>
+    </div>
+
+    <div class="block f10">
+        <strong>10px</strong><br><br>
+        Micro-tipografia.
+        Il segno collassa verso la funzione.
+    </div>
+
+    <div class="block f12">
+        <strong>12px</strong><br><br>
+        Scala secondaria.
+        Compromesso tra leggibilità e forma.
+    </div>
+
+    <div class="block f16">
+        <strong>16px</strong><br><br>
+        Dimensione editoriale standard.
+    </div>
+
+    <div class="block f24">
+        <strong>24px</strong><br><br>
+        La lettera diventa presenza visiva.
+    </div>
+
+</div>
+
+<script>
+/* ===== PRIMA PARTE: SFERA (INVARIATA) ===== */
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+const previewChar = document.getElementById('previewChar');
+const previewBox = document.getElementById('previewBox');
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+const letters = "qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM".split("");
+const points = [];
+const spherePoints = [];
+const radius = 380;
+const perspective = 900;
+
+let mouseY = 0;
+let rotX = 0;
+let rotY = 0;
+
+letters.forEach((char, i) => {
+    points.push({
+        char,
+        x: Math.random() * canvas.width * 2 - canvas.width * 0.5,
+        y: Math.random() * canvas.height * 2 - canvas.height * 0.5,
+        z: Math.random() * 1000 - 500
+    });
+
+    const phi = Math.acos(1 - 2 * (i + 0.5) / letters.length);
+    const theta = Math.PI * (1 + Math.sqrt(5)) * i;
+
+    spherePoints.push({
+        x: radius * Math.sin(phi) * Math.cos(theta),
+        y: radius * Math.sin(phi) * Math.sin(theta),
+        z: radius * Math.cos(phi)
+    });
+});
+
+document.addEventListener('mousemove', e => {
+    mouseY = (e.clientY / canvas.height - 0.5) * 2;
+});
+
+function rotatePoint(p, ax, ay) {
+    let y1 = p.y * Math.cos(ax) - p.z * Math.sin(ax);
+    let z1 = p.y * Math.sin(ax) + p.z * Math.cos(ax);
+    let x2 = p.x * Math.cos(ay) + z1 * Math.sin(ay);
+    let z2 = -p.x * Math.sin(ay) + z1 * Math.cos(ay);
+    return {x: x2, y: y1, z: z2};
+}
+
+function project(p) {
+    const scale = perspective / (perspective + p.z);
+    return {
+        x: p.x * scale + canvas.width / 2,
+        y: p.y * scale + canvas.height / 2,
+        size: scale * 38
+    };
+}
+
+function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    const scrollProgress = Math.min(window.scrollY / canvas.height, 1);
+
+    rotX += 0.002;
+    rotY += 0.003;
+
+    points.forEach((p, i) => {
+        const target = spherePoints[i];
+        p.x += (target.x - p.x) * scrollProgress * 0.04;
+        p.y += (target.y - p.y) * scrollProgress * 0.04;
+        p.z += (target.z - p.z) * scrollProgress * 0.04;
+
+        const rotated = rotatePoint(p, rotX + mouseY * 0.3, rotY);
+        const proj = project(rotated);
+
+        ctx.font = `${proj.size}px G15Font`;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(p.char, proj.x, proj.y);
+    });
+
+    requestAnimationFrame(draw);
+}
+draw();
+
+canvas.addEventListener('click', () => {
+    previewChar.textContent =
+        letters[Math.floor(Math.random() * letters.length)];
+});
+
+/* ===== SCROLL ===== */
+const blocks = document.getElementById('blocks');
+const slider = document.getElementById('sizeSlider');
+const sliderValue = document.getElementById('sliderValue');
+const variableText = document.getElementById('variableText');
+
+window.addEventListener('scroll', () => {
+    if (window.scrollY > canvas.height * 1.5) {
+        canvas.style.display = 'none';
+        blocks.classList.add('visible');
+        previewBox.classList.add('expanded');
+        previewChar.style.display = 'none';
+        slider.style.display = 'block';
+        sliderValue.style.display = 'block';
+    } else {
+        canvas.style.display = 'block';
+        blocks.classList.remove('visible');
+        previewBox.classList.remove('expanded');
+        previewChar.style.display = 'block';
+        slider.style.display = 'none';
+        sliderValue.style.display = 'none';
+    }
+});
+
+/* ===== SLIDER SOLO SU TYPE-IN ===== */
+slider.addEventListener('input', () => {
+    variableText.style.fontSize = slider.value + 'px';
+    sliderValue.textContent = slider.value + 'px';
+});
+</script>
+
+</body>
+</html>

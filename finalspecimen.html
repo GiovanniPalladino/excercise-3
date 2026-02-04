@@ -10,10 +10,12 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
 
     <style>
-        /* 初始状态设为隐藏，防止闪烁 */
-        #vibe-canvas {
-            opacity: 0;
-        }
+    #vibe-canvas {
+  transform-origin: top left;
+       opacity: 0;
+}
+
+
 
         @font-face {
             font-family: 'Cell-2901';
@@ -55,7 +57,7 @@
             background-position: center;
             background-size: cover;
             /* 关键：铺满整个屏幕（会裁一点边） */
-            opacity: 0.5;
+            opacity: 0.3;
             /* 先设 1，确保你能看到 */
             pointer-events: none;
             z-index: 0;
@@ -223,6 +225,12 @@
             fill: var(--primary-green);
             transition: fill 0.3s ease;
         }
+
+        /* ===== INTRO: overview 2x2 (4 pagine in miniatura) ===== */
+        #vibe-canvas {
+            transform-origin: top left;
+            /* importantissimo per lo zoom pulito */
+        }
     </style>
 </head>
 
@@ -326,9 +334,10 @@
 
                     <div class="h-[90%] flex-1 flex flex-col justify-end items-start">
                         <div
-                            class="w-80 aspect-square border border-[#2D7732] flex ml-30 items-center justify-center bg-white/5 shadow-sm rounded-full overflow-hidden">
-                            <span id="focus-char" class="text-[200px] leading-none text-[#2D7732]">a</span>
+                            class="w-80 aspect-square border border-transparent flex ml-30 items-center justify-center bg-white/5 shadow-sm rounded-full overflow-hidden">
+                            <span id="focus-char" class="text-[300px] leading-none text-[#2D7732]">a</span>
                         </div>
+
                     </div>
                 </div>
             </section>
@@ -422,47 +431,97 @@
             }
         }
 
-        // 初始化页面
-        window.addEventListener('load', () => {
-            document.getElementById('vibe-canvas').style.opacity = "1";
+      let introDone = false;
 
-            // 入场动画
-            gsap.fromTo("#center-x",
-                {
-                    scale: 5,
-                    opacity: 0
-                },
-                {
-                    scale: 1,
-                    opacity: 1,
-                    duration: 1.5,
-                    ease: "power2.out"
-                }
-            );
+window.addEventListener('load', () => {
+  document.getElementById('vibe-canvas').style.opacity = "1";
 
-            // 添加滚轮事件监听
-            window.addEventListener('wheel', handleWheel, { passive: false });
+  // Nascondo contenuti pagine all'inizio
+  gsap.set("section", { opacity: 0 });
 
-            // 添加键盘事件支持（方向键和空格键）
-            window.addEventListener('keydown', (e) => {
-                if (isScrolling) return;
+  // Stato iniziale canvas normale
+  gsap.set(canvas, { scale: 1, x: "0%", y: "0%" });
 
-                let delta = 0;
-                if (e.key === 'ArrowDown' || e.key === ' ') {
-                    delta = 1;
-                } else if (e.key === 'ArrowUp') {
-                    delta = -1;
-                }
+  // X parte dal centro dello schermo
+  gsap.set(centerX, {
+    opacity: 1,
+    scale: 0.08,
+    top: "50%",
+    left: "50%",
+    xPercent: -50,
+    yPercent: -50
+  });
 
-                if (delta !== 0) {
-                    e.preventDefault();
-                    const newSection = currentSection + delta;
-                    if (newSection >= 1 && newSection <= totalSections) {
-                        handleWheel({ deltaY: delta * 100 });
-                    }
-                }
-            });
-        });
+  const tl = gsap.timeline({ defaults: { ease: "power2.out" } });
+
+  // 1️⃣ X cresce al centro
+  tl.to(centerX, {
+    scale: 1,
+    duration: 1.2
+  });
+
+  // 2️⃣ Pausa 2s
+  tl.to({}, { duration: 2 });
+
+  // 3️⃣ X torna alla sua posizione "artistica" originale
+  tl.to(centerX, {
+    top: "33%",
+    duration: 0.8,
+    ease: "power2.inOut"
+  });
+
+  // 4️⃣ Zoom OUT per mostrare preview 4 pagine
+  tl.to(canvas, {
+    scale: 0.5,
+    duration: 0.9,
+    ease: "power2.inOut"
+  });
+
+  // 5️⃣ Fade-in preview
+  tl.to("section", {
+    opacity: 1,
+    duration: 0.6
+  }, "-=0.2");
+
+  // micro pausa visiva
+  tl.to({}, { duration: 0.4 });
+
+  // 6️⃣ Zoom IN prima pagina (come adesso)
+  tl.to(canvas, {
+    scale: 1,
+    duration: 1.1,
+    ease: "power2.inOut",
+    onComplete: () => {
+      introDone = true;
+    }
+  });
+
+  // Scroll attivo SOLO dopo intro
+  window.addEventListener("wheel", (e) => {
+    if (!introDone) return;
+    handleWheel(e);
+  }, { passive: false });
+
+  window.addEventListener("keydown", (e) => {
+    if (!introDone) return;
+    if (isScrolling) return;
+
+    let delta = 0;
+    if (e.key === "ArrowDown" || e.key === " ") delta = 1;
+    else if (e.key === "ArrowUp") delta = -1;
+
+    if (delta !== 0) {
+      e.preventDefault();
+      const newSection = currentSection + delta;
+      if (newSection >= 1 && newSection <= totalSections) {
+        handleWheel({ deltaY: delta * 100 });
+      }
+    }
+  });
+});
+
+ 
+
 
         // 精确字符集填充
         const glyphSets = {

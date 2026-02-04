@@ -145,44 +145,50 @@
         }
 
         /* IMAGE HOVER LOGIC */
-        .image {
-            width: 100%;
-            align-self: stretch;
-            position: relative;
-            overflow: visible;
-        }
+.image {
+  width: 100%;
+  align-self: stretch;
+  position: relative;
+  overflow: visible;
+}
+
+/* disable hover/click for items without a back image */
+.image:not(.has-back) {
+  pointer-events: none;
+}
 
         .image img {
             display: block;
             transition: opacity 0.5s ease-in-out;
         }
 
-        .image img.img-front {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
+.image img.img-front {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
 
-        .image img.img-back {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 20vw;
-            height: 20vw;
-            object-fit: contain;
-            opacity: 0;
-            z-index: 100;
-            pointer-events: none;
-        }
+.image img.img-back {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 20vw;
+  height: 20vw;
+  object-fit: contain;
+  opacity: 0;
+  z-index: 100;
+  pointer-events: none;
+}
 
-        .image:hover img.img-front {
-            opacity: 0;
-        }
+/* hover swap only when a back image exists */
+.image.has-back:hover img.img-front {
+  opacity: 0;
+}
 
-        .image:hover img.img-back {
-            opacity: 1;
-        }
+.image.has-back:hover img.img-back {
+  opacity: 1;
+}
 
         /* Grid Items Positioning */
         .image:nth-child(1) { grid-column: 1 / span 4; grid-row: 3 / span 2; }
@@ -312,11 +318,11 @@
 
   background: #f3fcf4;
   color: #2d7732;
-  font-size: 13px;
+  font-size: 16px;
   line-height: 1.6;
 
   padding: 14px 16px;
-  border: 1px solid #2d7732;
+  border: none;
 
   opacity: 0;
   pointer-events: none;
@@ -326,40 +332,21 @@
   z-index: 300;
 
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  column-gap: 15px;
-
-  text-align: left; /* CENTRO DEL BOX */
+  grid-template-columns: max-content max-content;
+  column-gap: 12px;           /* tight gap between col 1 and 2 */
+  text-align: left;
 }
 .info-overlay p {
-  margin-bottom: 4px;
-}
-
-/* prima colonna */
-.info-overlay p:nth-child(-n+9) {
-  text-align: right;
-}
-
-.image.active .info-overlay {
-  opacity: 1;
-  pointer-events: auto;
-  transform: translateY(0);
-}
-
-.info-overlay p {
-  break-inside: avoid;
   margin-bottom: 6px;
+  text-align: left; /* default for cols 2 & 3 */
+  break-inside: avoid;
 }
-
+.info-overlay p:nth-child(2n+1) { text-align: right; }   /* first column */
 
 .image.active .info-overlay {
   opacity: 1;
   pointer-events: auto;
   transform: translateY(0);
-}
-
-.info-overlay p {
-  margin-bottom: 4px;
 }
 
 .info-overlay p:last-child {
@@ -405,15 +392,6 @@
   <img src="image/www2.png" class="img-back">
 
   <div class="info-overlay">
-    <p>Costruzione</p>
-    <p>Terminazione delle aste</p>
-    <p>Peso</p>
-    <p>Larghezza</p>
-    <p>Asse di inclinazione</p>
-    <p>Contrasto</p>
-    <p>Altezza delle minuscole</p>
-    <p>Apertura</p>
-    <p>Applicazione</p>
     <p>Membrana plasmatica</p>
     <p>Filamenti</p>
     <p>Parete cellulare</p>
@@ -570,10 +548,43 @@ window.addEventListener("scroll", () => {
 });
 
 document.querySelectorAll(".image").forEach(img => {
+  const overlay = img.querySelector(".info-overlay");
+
   img.addEventListener("click", e => {
     e.stopPropagation();
-    img.classList.toggle("active");
+    // close other open overlays
+    document.querySelectorAll(".image.active").forEach(other => {
+      if (other !== img) other.classList.remove("active");
+    });
+    img.classList.add("active");
   });
+
+  // hide the overlay as soon as the pointer leaves it
+  if (overlay) {
+    overlay.addEventListener("mouseleave", () => {
+      img.classList.remove("active");
+    });
+  }
+
+  // auto-hide when leaving the letter area (unless moving inside its overlay)
+  img.addEventListener("mouseleave", evt => {
+    if (!img.contains(evt.relatedTarget)) {
+      img.classList.remove("active");
+    }
+  });
+
+  // mark images that actually have a hover-back image
+  const back = img.querySelector(".img-back");
+  if (back && back.getAttribute("src") && back.getAttribute("src").trim() !== "") {
+    img.classList.add("has-back");
+    // if the back image fails to load, disable hover for this item
+    back.addEventListener("error", () => {
+      img.classList.remove("has-back");
+      img.style.pointerEvents = "none";
+    });
+  } else {
+    img.style.pointerEvents = "none";
+  }
 });
 
 document.addEventListener("click", () => {

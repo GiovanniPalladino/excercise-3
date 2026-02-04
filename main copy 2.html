@@ -302,6 +302,59 @@
   dominant-baseline: middle;
 }
 
+.info-overlay {
+  position: absolute;
+  bottom: 105%;
+  left: 0;
+
+  max-width: 420px;
+  background: #f3fcf4;
+  color: #2d7732;
+
+  font-size: 13px;
+  line-height: 1.4;
+
+  padding: 14px 16px;
+  border: 1px solid #2d7732;
+
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(10px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+
+  z-index: 200;
+
+  /* ✦ TRE COLONNE ✦ */
+  column-count: 3;
+  column-gap: 20px;
+}
+
+.image.active .info-overlay {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+.info-overlay p {
+  break-inside: avoid;
+  margin-bottom: 6px;
+}
+
+
+.image.active .info-overlay {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+.info-overlay p {
+  margin-bottom: 4px;
+}
+
+.info-overlay p:last-child {
+  margin-bottom: 0;
+}
+
     </style>
 </head>
 
@@ -336,7 +389,40 @@
     </div>
 
     <div id="content">
-        <div class="image"><img src="image/f4.png" class="img-front"><img src="image/www2.png" class="img-back"></div>
+       <div class="image">
+  <img src="image/f4.png" class="img-front">
+  <img src="image/www2.png" class="img-back">
+
+  <div class="info-overlay">
+    <p>Costruzione</p>
+    <p>Terminazione delle aste</p>
+    <p>Peso</p>
+    <p>Larghezza</p>
+    <p>Asse di inclinazione</p>
+    <p>Contrasto</p>
+    <p>Altezza delle minuscole</p>
+    <p>Apertura</p>
+    <p>Applicazione</p>
+    <p>Membrana plasmatica</p>
+    <p>Filamenti</p>
+    <p>Parete cellulare</p>
+    <p>Volume cellulare</p>
+    <p>Polarità</p>
+    <p>Gradiente di concentrazione</p>
+    <p>Corpo cellulare</p>
+    <p>Pori della membrana</p>
+    <p>Funzione della cellula</p>
+    <p>Italico</p>
+    <p>Sans-serif</p>
+    <p>Semi-bold</p>
+    <p>Normale</p>
+    <p>Minima</p>
+    <p>Alto</p>
+    <p>-</p>
+    <p>Generosa</p>
+  </div>
+</div>
+
         <div class="image"><img src="image/f9.png" class="img-front"><img src="image/www1.png" class="img-back"></div>
         <div class="image"><img src="image/ff8.png" class="img-front"><img src="image/www0.png" class="img-back"></div>
         <div class="image"><img src="image/f6.png" class="img-front"><img src="image/www9.png" class="img-back"></div>
@@ -470,6 +556,19 @@ window.addEventListener("scroll", () => {
     requestAnimationFrame(zoomScene);
   }
 });
+
+document.querySelectorAll(".image").forEach(img => {
+  img.addEventListener("click", e => {
+    e.stopPropagation();
+    img.classList.toggle("active");
+  });
+});
+
+document.addEventListener("click", () => {
+  document.querySelectorAll(".image.active")
+    .forEach(el => el.classList.remove("active"));
+});
+
 </script>
 </body>
 </html>

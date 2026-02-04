@@ -145,50 +145,44 @@
         }
 
         /* IMAGE HOVER LOGIC */
-.image {
-  width: 100%;
-  align-self: stretch;
-  position: relative;
-  overflow: visible;
-}
-
-/* disable hover/click for items without a back image */
-.image:not(.has-back) {
-  pointer-events: none;
-}
+        .image {
+            width: 100%;
+            align-self: stretch;
+            position: relative;
+            overflow: visible;
+        }
 
         .image img {
             display: block;
             transition: opacity 0.5s ease-in-out;
         }
 
-.image img.img-front {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
+        .image img.img-front {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
 
-.image img.img-back {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 20vw;
-  height: 20vw;
-  object-fit: contain;
-  opacity: 0;
-  z-index: 100;
-  pointer-events: none;
-}
+        .image img.img-back {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 20vw;
+            height: 20vw;
+            object-fit: contain;
+            opacity: 0;
+            z-index: 100;
+            pointer-events: none;
+        }
 
-/* hover swap only when a back image exists */
-.image.has-back:hover img.img-front {
-  opacity: 0;
-}
+        .image:hover img.img-front {
+            opacity: 0;
+        }
 
-.image.has-back:hover img.img-back {
-  opacity: 1;
-}
+        .image:hover img.img-back {
+            opacity: 1;
+        }
 
         /* Grid Items Positioning */
         .image:nth-child(1) { grid-column: 1 / span 4; grid-row: 3 / span 2; }
@@ -332,16 +326,18 @@
   z-index: 300;
 
   display: grid;
-  grid-template-columns: max-content max-content;
-  column-gap: 12px;           /* tight gap between col 1 and 2 */
+  grid-template-columns: max-content max-content; /* two columns */
+  grid-auto-flow: row;                             /* fill by rows */
+  grid-auto-rows: auto;
+  column-gap: 14px;                                /* small, delicate space */
   text-align: left;
 }
 .info-overlay p {
   margin-bottom: 6px;
-  text-align: left; /* default for cols 2 & 3 */
+  text-align: left; /* default for right column */
   break-inside: avoid;
 }
-.info-overlay p:nth-child(2n+1) { text-align: right; }   /* first column */
+.info-overlay p:nth-child(2n+1) { text-align: right; } /* left column */
 
 .image.active .info-overlay {
   opacity: 1;
@@ -393,22 +389,22 @@
 
   <div class="info-overlay">
     <p>Membrana plasmatica</p>
-    <p>Filamenti</p>
-    <p>Parete cellulare</p>
-    <p>Volume cellulare</p>
-    <p>Polarità</p>
-    <p>Gradiente di concentrazione</p>
-    <p>Corpo cellulare</p>
-    <p>Pori della membrana</p>
-    <p>Funzione della cellula</p>
     <p>Italico</p>
+    <p>Filamenti</p>
     <p>Sans-serif</p>
+    <p>Parete cellulare</p>
     <p>Semi-bold</p>
+    <p>Volume cellulare</p>
     <p>-</p>
+    <p>Polarità</p>
     <p>Normale</p>
+    <p>Gradiente di concentrazione</p>
     <p>Minima</p>
+    <p>Corpo cellulare</p>
     <p>Alto</p>
+    <p>Pori della membrana</p>
     <p>-</p>
+    <p>Funzione della cellula</p>
     <p>Generosa</p>
   </div>
 </div>
@@ -564,26 +560,6 @@ document.querySelectorAll(".image").forEach(img => {
     overlay.addEventListener("mouseleave", () => {
       img.classList.remove("active");
     });
-  }
-
-  // auto-hide when leaving the letter area (unless moving inside its overlay)
-  img.addEventListener("mouseleave", evt => {
-    if (!img.contains(evt.relatedTarget)) {
-      img.classList.remove("active");
-    }
-  });
-
-  // mark images that actually have a hover-back image
-  const back = img.querySelector(".img-back");
-  if (back && back.getAttribute("src") && back.getAttribute("src").trim() !== "") {
-    img.classList.add("has-back");
-    // if the back image fails to load, disable hover for this item
-    back.addEventListener("error", () => {
-      img.classList.remove("has-back");
-      img.style.pointerEvents = "none";
-    });
-  } else {
-    img.style.pointerEvents = "none";
   }
 });
 

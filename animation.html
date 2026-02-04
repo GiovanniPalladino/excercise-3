@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<title>Organismo Tipografico</title>
+
+<style>
+@font-face {
+  font-family: 'G15Font';
+  src: url('Cell-2901.ttf') format('truetype');
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'G15Font', Arial, sans-serif;
+}
+
+body {
+  background-color: #f3fcf4;
+  color: #2d7732;
+  overflow-x: hidden;
+}
+
+/* ======================
+   INTRO VIDEO
+====================== */
+#intro-container {
+  position: fixed;
+  inset: 0;
+  background: #f3fcf4;
+  z-index: 99999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: opacity 1s ease;
+}
+#intro-container.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+#intro-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* ======================
+   TITLE
+====================== */
+#title {
+  position: absolute;
+  left: 43%;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 18px;
+  display: flex;
+  gap: 0.5em;
+  cursor: pointer;
+  z-index: 10;
+}
+#title span {
+  opacity: 0;
+  transform: translateX(-20px);
+  transition: 0.8s ease;
+}
+#title.visible span {
+  opacity: 1;
+  transform: translateX(0);
+}
+#title.visible span:nth-child(2) {
+  transition-delay: 0.4s;
+}
+#title.fixed {
+  position: fixed;
+  top: 20px;
+  transform: none;
+}
+
+/* ======================
+   TEXT
+====================== */
+#text-block {
+  position: absolute;
+  top: 100%;
+  left: 35%;
+  width: 450px;
+  opacity: 0;
+  transition: 1.2s ease;
+}
+#text-block p {
+  font-size: 16px;
+  line-height: 1.6;
+  margin-bottom: 1.2em;
+}
+
+/* ======================
+   CONTENT PLACEHOLDER
+====================== */
+#content {
+  height: 250vh;
+}
+
+/* ======================
+   NOISE + X (CAMERA ZOOM)
+====================== */
+#zoom-scene {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  opacity: 0;
+}
+
+#zoom-scene.active {
+  opacity: 1;
+}
+
+/* Noise background */
+#zoom-noise {
+  position: absolute;
+  inset: 0;
+  background-image: url("image/noise.jpg");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover; /* <-- IMPORTANTE */
+  transform-origin: center;
+}
+
+/* X overlay */
+#zoom-x {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#zoom-x svg {
+  width: 100%;
+  height: 100%;
+}
+
+#zoom-x text {
+  font-size: 20px;
+  fill: #2d7732;
+  text-anchor: middle;
+  dominant-baseline: middle;
+}
+</style>
+</head>
+
+<body>
+
+<div id="intro-container">
+  <video id="intro-video" muted autoplay playsinline>
+    <source src="image/video.micro.website.mp4" type="video/mp4">
+  </video>
+</div>
+
+<div id="title">
+  <span>Organismo</span>
+  <span>Tipografico</span>
+</div>
+
+<div id="text-block">
+  <p>Il nostro archivio interpreta il segno grafico attraverso la lente della biologia cellulare...</p>
+</div>
+
+<div id="content"></div>
+
+<!-- CAMERA ZOOM SCENE -->
+<div id="zoom-scene">
+  <div id="zoom-noise"></div>
+  <div id="zoom-x">
+    <svg viewBox="0 0 100 100">
+      <text id="zoom-letter" x="50" y="50">x</text>
+    </svg>
+  </div>
+</div>
+
+<script>
+/* ======================
+   INTRO LOGIC
+====================== */
+const title = document.getElementById("title");
+const textBlock = document.getElementById("text-block");
+const intro = document.getElementById("intro-container");
+const video = document.getElementById("intro-video");
+
+video.addEventListener("ended", () => {
+  intro.classList.add("hidden");
+  setTimeout(() => {
+    intro.style.display = "none";
+    title.classList.add("visible");
+    setTimeout(() => {
+      title.classList.add("fixed");
+      textBlock.style.top = "50%";
+      textBlock.style.opacity = 1;
+    }, 1500);
+  }, 1000);
+});
+
+/* ======================
+   CAMERA ZOOM (NO BLUR)
+====================== */
+const scene = document.getElementById("zoom-scene");
+const noise = document.getElementById("zoom-noise");
+const letter = document.getElementById("zoom-letter");
+
+let zooming = false;
+let start = null;
+const duration = 4000;
+
+function zoomCamera(ts) {
+  if (!start) start = ts;
+  const p = Math.min((ts - start) / duration, 1);
+  const ease = Math.pow(p, 3);
+
+  /* X grows via font-size (vector, sharp) */
+  const fontSize = 20 + ease * 300; // ridotto per non essere troppo enorme
+  letter.setAttribute("font-size", fontSize);
+
+  /* Noise grows like camera zoom (corretto) */
+  const noiseScale = 1 + ease * 17; // da 1 a 4
+  noise.style.transform = `scale(${noiseScale})`;
+
+  if (p < 0.98) {
+    requestAnimationFrame(zoomCamera);
+  } else {
+    window.location.href = "finalspecimen.html";
+  }
+}
+
+window.addEventListener("scroll", () => {
+  if (zooming) return;
+  if (window.scrollY + window.innerHeight >= document.body.scrollHeight - 2) {
+    zooming = true;
+    scene.classList.add("active");
+    requestAnimationFrame(zoomCamera);
+  }
+});
+</script>
+
+</body>
+</html>

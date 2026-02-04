@@ -344,26 +344,34 @@
       transform-origin: center;
     }
 
-    #zoom-x {
-      position: absolute;
-      inset: 0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
+/* ======================
+   ZOOM NOISE + X (FINE PAGINA) 修正版
+====================== */
+#zoom-x {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  /* 移除原本的 align-items: flex-start */
+  align-items: center; 
+  pointer-events: none;
+}
 
-    #zoom-x svg {
-      width: 100%;
-      height: 100%;
-    }
+#zoom-x svg {
+  width: 100%;
+  height: 100%;
+  /* 关键点：通过 position 定位中心点 */
+  position: absolute;
+  top: 32%; /* 垂直中心点锁定在 32% */
+  left: 50%;
+  transform: translate(-50%, -50%); /* 将 SVG 自身的中心与 32% 坐标点对齐 */
+}
 
-    #zoom-x text {
-      font-size: 20px;
-      fill: #2d7732;
-      text-anchor: middle;
-      dominant-baseline: middle;
-    }
-
+#zoom-x text {
+  fill: #2d7732;
+  text-anchor: middle;
+  dominant-baseline: central; /* 比 middle 更精准的垂直居中方式 */
+}
 .info-overlay {
   position: absolute;
   top: 60%;                 /* push box lower to avoid touching images */
@@ -781,7 +789,7 @@
 
     let zooming = false;
     let start = null;
-    const duration = 4000;
+    const duration = 6000;
 
     function zoomScene(ts) {
       if (!start) start = ts;
@@ -789,7 +797,8 @@
       const ease = Math.pow(p, 3);
 
       // X cresce via font-size (sempre nitida)
-      const fontSize = 20 + ease * 300;
+      const fontSize = 1 + ease * 30;  // 更大
+
       letter.setAttribute("font-size", fontSize);
 
       // Noise zoom

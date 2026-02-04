@@ -252,6 +252,17 @@ cursor: pointer; /* 可选：让它看起来可点 */
 .custom-scrollbar::-webkit-scrollbar {
   display: none;              /* Chrome / Safari */
 }
+#intro-x{
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 30px;
+  line-height: 1;
+  color: var(--primary-green);
+  z-index: 99998;  /* sotto header, sopra tutto */
+  pointer-events: none;
+}
 
     </style>
 </head>
@@ -259,6 +270,8 @@ cursor: pointer; /* 可选：让它看起来可点 */
 <body>
     <div id="fixed-header">organismo tipografico</div>
     <!-- 滚动指示器 -->
+
+
     <div id="scroll-tracker">
         <div class="scroll-dot active" data-section="1"></div>
         <div class="scroll-dot" data-section="2"></div>
@@ -386,7 +399,7 @@ cursor: pointer; /* 可选：让它看起来可点 */
         const scrollDots = document.querySelectorAll('.scroll-dot');
 const fixedHeader = document.getElementById('fixed-header');
 fixedHeader.addEventListener('click', () => {
-  window.location.href = '1.html';
+  window.location.href = '1 copy.html';
 });
 
         let currentSection = 1;
@@ -465,7 +478,9 @@ fixedHeader.addEventListener('click', () => {
       gsap.set("section", { opacity: 0 }); 
     // 设置 CSS 变量，让背景 noise 初始不可见
     gsap.set(mainWrapper, { "--noise-opacity": 0 }); 
-    
+
+gsap.set(centerX, { opacity: 0 });  // IMPORTANT: la X grande resta dov’è, solo invisibile
+
     gsap.set(canvas, { 
         opacity: 1, 
         scale: 0.5, 
@@ -473,6 +488,18 @@ fixedHeader.addEventListener('click', () => {
         y: "0%" 
     });
     gsap.set(centerX, { opacity: 1 });
+
+    gsap.set(centerX, { fontSize: "600px" });
+
+    gsap.set(centerX, {
+  position: "fixed",
+  top: "32%",
+  left: "50%",
+  xPercent: -50,
+  yPercent: -50
+});
+
+
 
     const tl = gsap.timeline({ 
         defaults: { ease: "power2.inOut" },
@@ -483,25 +510,32 @@ fixedHeader.addEventListener('click', () => {
 
     // --- 动画序列 ---
     
-    // 第一阶段：保持 1 秒只有 X
-    tl.to({}, { duration: 1 }) 
     
-    // 第二阶段：Noise 背景和所有 Section 同时渐渐浮现
-    .to(["section", mainWrapper], { 
-        // 针对 section 改变 opacity，针对 wrapper 改变变量值
-        opacity: 1,
-        "--noise-opacity": 0.3, // 这里填你想要的最终噪点浓度
-        duration: 1.2,
-        stagger: 0.1 // 稍微错开一点，视觉效果更灵动
-    })
-    
-    // 第三阶段：停顿并缩放
-    .to({}, { duration: 0.5 })
-    .to(canvas, {
-        scale: 1,
-        duration: 1.1,
-        ease: "power3.inOut"
-    });
+    // 1 secondo: solo X piccola
+tl.to({}, { duration: 1 })
+
+.to(centerX, {
+  fontSize: "300vh",
+  duration: 0.6,
+  ease: "power2.inOut"
+})
+
+
+
+  // poi continua tutto come già hai
+  .to(["section", mainWrapper], {
+    opacity: 1,
+    "--noise-opacity": 0.3,
+    duration: 1.2,
+    stagger: 0.1
+  })
+  .to({}, { duration: 0.5 })
+  .to(canvas, {
+    scale: 1,
+    duration: 1.1,
+    ease: "power3.inOut"
+  });
+
 
             // --- 交互控制 (保持不变) ---
             window.addEventListener("wheel", (e) => {
